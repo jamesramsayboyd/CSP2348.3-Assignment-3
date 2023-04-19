@@ -35,6 +35,47 @@ def inorder(root):
         inorder(root.right)
 
 
+def print_space(n, removed):
+    for i in range(n):
+        print("\t", end="")
+    if removed is None:
+        print(" ", end="")
+    else:
+        print(removed.element, end="")
+
+
+def height_of_tree(root):
+    if root is None:
+        return 0
+    return 1 + max(height_of_tree(root.left), height_of_tree(root.right))
+
+
+def print_binary_tree(root):
+    tree_level = []
+    temp = []
+    tree_level.append(root)
+    counter = 0
+    height = height_of_tree(root) - 1
+    number_of_elements = 2 ** (height + 1) - 1
+    while counter <= height:
+        removed = tree_level.pop(0)
+        if len(temp) == 0:
+            print_space(int(number_of_elements / (2 ** (counter + 1))), removed)
+        else:
+            print_space(int(number_of_elements / (2 ** counter)), removed)
+        if removed is None:
+            temp.append(None)
+            temp.append(None)
+        else:
+            temp.append(removed.left)
+            temp.append(removed.right)
+        if len(tree_level) == 0:
+            print("\n")
+            tree_level = temp
+            temp = []
+            counter += 1
+
+
 """ An algorithm/method to re-arrange the order of a given sequence of integers so that when the
 data items are inserted sequentially into an initially empty BST, the newly created BST will be
 a balanced BST.
@@ -64,11 +105,45 @@ def main():
     # sequence.sort()
     # print(sequence)
 
-    r = TreeNode(50)
-    for x in sequence:
-        insert_into_bst(r, x)
+    # r = TreeNode(50)
+    # for x in sequence:
+    #     insert_into_bst(r, x)
+    #
+    # inorder(r)
 
-    inorder(r)
+    root = TreeNode(1)
+    temp = TreeNode(2)
+    root.left = temp
+    temp = TreeNode(3)
+    root.right = temp
+
+    temp = TreeNode(4)
+    root.left.left = temp
+    temp = TreeNode(5)
+    root.left.right = temp
+    temp = TreeNode(6)
+    root.right.left = temp
+    temp = TreeNode(7)
+    root.right.right = temp
+
+    temp = TreeNode(8)
+    root.left.left.left = temp
+    temp = TreeNode(9)
+    root.left.left.right = temp
+    temp = TreeNode(10)
+    root.left.right.left = temp
+    temp = TreeNode(11)
+    root.left.right.right = temp
+    temp = TreeNode(12)
+    root.right.left.left = temp
+    temp = TreeNode(13)
+    root.right.left.right = temp
+    temp = TreeNode(14)
+    root.right.right.left = temp
+    temp = TreeNode(15)
+    root.right.right.right = temp
+
+    print_binary_tree(root)
 
 
 main()
