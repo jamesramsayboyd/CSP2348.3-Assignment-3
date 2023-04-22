@@ -1,16 +1,16 @@
-# # Source: CSP2348_M6_Binary Trees.pptx
-# class TreeNode:
-#     def __init__(self, e):
-#         self.element = e
-#         self.left = None
-#         self.right = None
-#
-#
-# # Source: CSP2348_M6_Binary Trees.pptx
-# class BinaryTree:
-#     def __init__(self):
-#         self.root = None
-#         self.size = 0
+# Source: CSP2348_M6_Binary Trees.pptx
+class TreeNode:
+    def __init__(self, e):
+        self.element = e
+        self.left = None
+        self.right = None
+
+
+# Source: CSP2348_M6_Binary Trees.pptx
+class BinaryTree:
+    def __init__(self):
+        self.root = None
+        self.size = 0
 #
 #
 # # https://www.geeksforgeeks.org/binary-search-tree-set-1-search-and-insertion/
@@ -98,108 +98,75 @@
 #     return
 #
 #
-# def main():
-#     sequence = [9, -1, 45, 6, 8, 21, 34, 5, 55, 65, 543, 18, 90, 122, 132, 0, 66, 100, -12, 17]
-#
-#     # print(sequence)
-#     # sequence.sort()
-#     # print(sequence)
-#
-#     # r = TreeNode(50)
-#     # for x in sequence:
-#     #     insert_into_bst(r, x)
-#     #
-#     # inorder(r)
-#
-#     root = TreeNode(1)
-#     temp = TreeNode(2)
-#     root.left = temp
-#     temp = TreeNode(3)
-#     root.right = temp
-#
-#     temp = TreeNode(4)
-#     root.left.left = temp
-#     temp = TreeNode(5)
-#     root.left.right = temp
-#     temp = TreeNode(6)
-#     root.right.left = temp
-#     temp = TreeNode(7)
-#     root.right.right = temp
-#
-#     temp = TreeNode(8)
-#     root.left.left.left = temp
-#     temp = TreeNode(9)
-#     root.left.left.right = temp
-#     temp = TreeNode(10)
-#     root.left.right.left = temp
-#     temp = TreeNode(11)
-#     root.left.right.right = temp
-#     temp = TreeNode(12)
-#     root.right.left.left = temp
-#     temp = TreeNode(13)
-#     root.right.left.right = temp
-#     temp = TreeNode(14)
-#     root.right.right.left = temp
-#     temp = TreeNode(15)
-#     root.right.right.right = temp
-#
-#     print_binary_tree(root)
+def main():
+    sequence = [9, -1, 45, 6, 8, 21, 34, 5, 55, 65, 543, 18, 90, 122, 132, 0, 66, 100, -12, 17]
+
+    # print(sequence)
+    # sequence.sort()
+    # print(sequence)
+
+    binary_tree = BinaryTree()
+    for i in sequence:
+        binary_tree.root = TreeNode(i)
+        binary_tree.size += 1
+        print(TreeNode(i).element)
+        print(binary_tree.size)
+        print()
+
+main()
+
+# class Treenode:
+#     def __init__(self, data):
+#         self.data = data
+#         self.left = None
+#         self.right = None
 #
 #
-# main()
-
-class Treenode:
-    def __init__(self, data):
-        self.data = data
-        self.left = None
-        self.right = None
-
-
-class Tree:
-    def __init__(self):
-        self.root = None
-
-
-def height(root):
-    if root is None:
-        return 0
-    return max(height(root.left), height(root.right)) + 1
-
-
-def getcol(h):
-    if h == 1:
-        return 1
-    return getcol(h - 1) + getcol(h - 1) + 1
-
-
-def printTree(M, root, col, row, height):
-    if root is None:
-        return
-    M[row][col] = root.data
-    printTree(M, root.left, col - pow(2, height - 2), row + 1, height - 1)
-    printTree(M, root.right, col + pow(2, height - 2), row + 1, height - 1)
-
-
-def TreePrinter():
-    h = height(myTree.root)
-    col = getcol(h)
-    M = [[0 for _ in range(col)] for __ in range(h)]
-    printTree(M, myTree.root, col // 2, 0, h)
-    for i in M:
-        for j in i:
-            if j == 0:
-                print(" ", end=" ")
-            else:
-                print(j, end=" ")
-        print("")
-
-
-myTree = Tree()
-myTree.root = Treenode(1)
-myTree.root.left = Treenode(2)
-myTree.root.right = Treenode(3)
-myTree.root.left.left = Treenode(4)
-myTree.root.left.right = Treenode(5)
-myTree.root.right.left = Treenode(6)
-myTree.root.right.right = Treenode(7)
-TreePrinter()
+# class Tree:
+#     def __init__(self):
+#         self.root = None
+#
+#
+# def height(root):
+#     if root is None:
+#         return 0
+#     return max(height(root.left), height(root.right)) + 1
+#
+#
+# def getcol(h):
+#     if h == 1:
+#         return 1
+#     return getcol(h - 1) + getcol(h - 1) + 1
+#
+#
+# def printTree(M, root, col, row, height):
+#     if root is None:
+#         return
+#     M[row][col] = root.data
+#     printTree(M, root.left, col - pow(2, height - 2), row + 1, height - 1)
+#     printTree(M, root.right, col + pow(2, height - 2), row + 1, height - 1)
+#
+#
+# def TreePrinter():
+#     h = height(myTree.root)
+#     col = getcol(h)
+#     M = [[0 for _ in range(col)] for __ in range(h)]
+#     printTree(M, myTree.root, col // 2, 0, h)
+#     for i in M:
+#         for j in i:
+#             if j == 0:
+#                 print(" ", end=" ")
+#             else:
+#                 print(j, end=" ")
+#         print("")
+#
+#
+# myTree = Tree()
+# myTree.root = Treenode(1)
+# myTree.root.left = Treenode(2)
+# myTree.root.right = Treenode(3)
+# myTree.root.left.left = Treenode(4)
+# myTree.root.left.right = Treenode(5)
+# myTree.root.right.left = Treenode(6)
+# myTree.root.right.right = Treenode(7)
+# TreePrinter()
