@@ -13,18 +13,18 @@ class BinaryTree:
         self.size = 0
 #
 #
-# # https://www.geeksforgeeks.org/binary-search-tree-set-1-search-and-insertion/
-# def insert_into_bst(root, e):
-#     if root is None:
-#         return TreeNode(e)
-#     else:
-#         if root.element is e:
-#             return root
-#         elif root.element < e:
-#             root.right = insert_into_bst(root.right, e)
-#         else:
-#             root.left = insert_into_bst(root.left, e)
-#     return root
+# https://www.geeksforgeeks.org/binary-search-tree-set-1-search-and-insertion/
+def insert_into_bst(root, e):
+    if root is None:
+        return TreeNode(e)
+    else:
+        if root.element is e:
+            return root
+        elif root.element < e:
+            root.right = insert_into_bst(root.right, e)
+        else:
+            root.left = insert_into_bst(root.left, e)
+    return root
 #
 #
 # # https://www.geeksforgeeks.org/binary-search-tree-set-1-search-and-insertion/
@@ -109,8 +109,8 @@ def main():
     for i in sequence:
         binary_tree.root = TreeNode(i)
         binary_tree.size += 1
-        print(TreeNode(i).element)
-        print(binary_tree.size)
+        print("Element: ", TreeNode(i).element)
+        print("Node no. ", binary_tree.size)
         print()
 
 main()
