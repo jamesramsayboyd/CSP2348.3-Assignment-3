@@ -15,17 +15,41 @@ class BinaryTree:
         self.size = 0
 
 
+""" A recursive algorithm that sorts a given array of integers such that when the elements are
+inserted into an initially empty Binary Search Tree, the resulting BST will be balanced.
+"""
+def sort_for_bst_insertion(array):
+    sorted_arr = []
+
+    def sort(arr):
+        if len(arr) == 0:
+            return
+
+        arr.sort()
+        mid = (len(arr)) // 2
+        sorted_arr.append(arr[mid])
+
+        sort(arr[0:mid])
+        sort(arr[mid + 1:])
+        return sorted_arr
+
+    return sort(array)
+
+
+""" A recursive algorithm that sorts a given array of integers such that when the elements are
+inserted into an initially empty Binary Search Tree, the resulting BST will be balanced.
+"""
 def sort_array_for_bst_insertion(arr):
     if not arr:
         return None  # base case for recursive algorithm
 
     arr.sort()  # Sort array in ascending order first
     midpoint = (len(arr)) // 2  # Find middle element of array
-    root = TreeNode(arr[midpoint])  # Middle element instantiated as node of BST
+    node = TreeNode(arr[midpoint])  # Middle element instantiated as node of BST
 
-    root.left = sort_array_for_bst_insertion(arr[:midpoint])  # Recursively find midpoint of left side of array
-    root.right = sort_array_for_bst_insertion(arr[midpoint + 1:])  # # Recursively find midpoint of right side of array
-    return root
+    node.left = sort_array_for_bst_insertion(arr[:midpoint])  # Recursively find midpoint of left side of array
+    node.right = sort_array_for_bst_insertion(arr[midpoint + 1:])  # # Recursively find midpoint of right side of array
+    return node
 
 
 def print_pre_order(tree_node):
@@ -174,7 +198,11 @@ def print_binary_tree_structure(root):
 
 def main():
     sequence = [9, -1, 45, 6, 8, 21, 34, 5, 55, 65, 543, 18, 90, 122, 132, 0, 66, 100, -12, 17]
+    sorted_arr = []
     sequence_2 = generate_random_integer_set(20)
+
+    print(sequence)
+    print(sort_for_bst_insertion(sequence))
 
     # print("First sequence of numbers, unsorted:")
     # for i in sequence:
@@ -183,33 +211,33 @@ def main():
     # root = sort_array_for_bst_insertion(sequence)
     # print("First sequence of numbers, sorted for BST insertion:")
     # print_pre_order(root)
-    # print()
-    # print("Binary search tree shape:")
-    # print()
+    # # print()
+    # # print("Binary search tree shape:")
+    # # print()
+    # #
+    # # print("Second sequence of numbers, unsorted:")
+    # # for i in sequence_2:
+    # #     print(i, end="  ")
+    # # print()
+    # # root = sort_array_for_bst_insertion(sequence_2)
+    # # print("First sequence of numbers, sorted for BST insertion:")
+    # # print_pre_order(root)
+    # # print()
+    # # print("Binary search tree shape:")
+    # # print()
     #
-    # print("Second sequence of numbers, unsorted:")
-    # for i in sequence_2:
-    #     print(i, end="  ")
-    # print()
+    # root = sort_array_for_bst_insertion(sequence)
+    # my_tree = BinaryTree()
+    # my_tree.root = root
+    # #tree_printer(my_tree)
+    # #print_binary_tree(root)
+    #
     # root = sort_array_for_bst_insertion(sequence_2)
-    # print("First sequence of numbers, sorted for BST insertion:")
-    # print_pre_order(root)
-    # print()
-    # print("Binary search tree shape:")
-    # print()
-
-    root = sort_array_for_bst_insertion(sequence)
-    my_tree = BinaryTree()
-    my_tree.root = root
-    #tree_printer(my_tree)
-    #print_binary_tree(root)
-
-    root = sort_array_for_bst_insertion(sequence_2)
-    my_tree = BinaryTree()
-    my_tree.root = root
-    #tree_printer(my_tree)
-    #print_binary_tree(root)
-    print_binary_tree_structure(root)
+    # my_tree = BinaryTree()
+    # my_tree.root = root
+    # #tree_printer(my_tree)
+    # #print_binary_tree(root)
+    # print_binary_tree_structure(root)
 
 
 main()
