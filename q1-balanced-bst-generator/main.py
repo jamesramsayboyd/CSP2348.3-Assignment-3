@@ -88,8 +88,88 @@ def tree_printer(tree):
 def generate_random_integer_set(a):
     array = []
     for i in range(a):
-        array.append(random.randint(-999, 999))
+        array.append(random.randint(0, 99))
     return array
+
+
+def print_spaces(n, node):
+    for i in range(n):
+        print("\t", end="")
+    if node is None:
+        print("  ", end="")
+    else:
+        print(node.element, end="")
+
+
+def height_of_tree(node):
+    if node is None:
+        return 0
+    return 1 + max(height_of_tree(node.left), height_of_tree(node.right))
+
+
+# def print_binary_tree(node):
+#     tree_level = []
+#     temp = []
+#     tree_level.append(node)
+#     counter = 0
+#     tree_height = height_of_tree(node) - 1
+#     number_of_elements = 2 ** (tree_height + 1) - 1
+#     while counter <= tree_height:
+#         node = tree_level.pop(0)
+#         if len(temp) == 0:
+#             print_spaces(int(number_of_elements / (2 ** (counter + 1))), node)
+#         else:
+#             print_spaces(int(number_of_elements / (2 ** counter)), node)
+#         if node is None:
+#             temp.append(None)
+#             temp.append(None)
+#         else:
+#             temp.append(node.left)
+#             temp.append(node.right)
+#         if len(tree_level) == 0:
+#             print("\n")
+#             tree_level = temp
+#             temp = []
+#             counter += 1
+
+# Source: https://stackoverflow.com/questions/34012886/print-binary-tree-level-by-level-in-python/72497198#72497198
+def print_binary_tree_structure(root):
+
+    number_of_levels = height_of_tree(root)
+    width = pow(2, number_of_levels + 1)
+
+    q = [(root, 0, width, 'c')]
+    levels = []
+
+    while (q):
+        node, level, x, align = q.pop(0)
+        if node:
+            if len(levels) <= level:
+                levels.append([])
+
+            levels[level].append([node, level, x, align])
+            seg = width // (pow(2, level + 1))
+            q.append((node.left, level + 1, x - seg, 'l'))
+            q.append((node.right, level + 1, x + seg, 'r'))
+
+    for i, l in enumerate(levels):
+        pre = 0
+        preline = 0
+        linestr = ''
+        pstr = ''
+        seg = width // (pow(2, i + 1))
+        for n in l:
+            valstr = str(n[0].element)
+            if n[3] == 'r':
+                linestr += ' ' * (n[2] - preline - 1 - seg - seg // 2) + '¯' * (seg + seg // 2) + '\\'
+                preline = n[2]
+            if n[3] == 'l':
+                linestr += ' ' * (n[2] - preline - 1) + '/' + '¯' * (seg + seg // 2)
+                preline = n[2] + seg + seg // 2
+            pstr += ' ' * (n[2] - pre - len(valstr)) + valstr  # correct the position according to the number size
+            pre = n[2]
+        print(linestr)
+        print(pstr)
 
 
 def main():
@@ -121,7 +201,15 @@ def main():
     root = sort_array_for_bst_insertion(sequence)
     my_tree = BinaryTree()
     my_tree.root = root
-    tree_printer(my_tree)
+    #tree_printer(my_tree)
+    #print_binary_tree(root)
+
+    root = sort_array_for_bst_insertion(sequence_2)
+    my_tree = BinaryTree()
+    my_tree.root = root
+    #tree_printer(my_tree)
+    #print_binary_tree(root)
+    print_binary_tree_structure(root)
 
 
 main()
