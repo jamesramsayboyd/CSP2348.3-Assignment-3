@@ -16,7 +16,8 @@ class BinaryTree:
 
 
 """ A recursive algorithm that sorts a given array of integers such that when the elements are
-inserted into an initially empty Binary Search Tree, the resulting BST will be balanced.
+inserted into an initially empty Binary Search Tree, the resulting BST will be balanced. Returns
+a newly sorted array.
 """
 def sort_for_bst_insertion(array):
     sorted_arr = []
@@ -34,6 +35,20 @@ def sort_for_bst_insertion(array):
         return sorted_arr
 
     return sort(array)
+
+
+def sequential_bst_insert(root, element):
+    if root is None:
+        return TreeNode(element)
+    else:
+        if root.element is element:
+            return root
+        elif root.element < element:
+            root.right = sequential_bst_insert(root.right, element)
+        else:
+            root.left = sequential_bst_insert(root.left, element)
+    return root
+
 
 
 """ A recursive algorithm that sorts a given array of integers such that when the elements are
@@ -74,40 +89,6 @@ def insert_into_bst(root, e):
     return root
 
 
-def height(root):
-    if root is None:
-        return 0
-    return max(height(root.left), height(root.right)) + 1
-
-
-def get_col(h):
-    if h == 1:
-        return 1
-    return get_col(h - 1) + get_col(h - 1) + 1
-
-
-def print_tree(m, root, col, row, tree_height):
-    if root is None:
-        return
-    m[row][col] = root.element
-    print_tree(m, root.left, col - pow(2, tree_height - 2), row + 1, tree_height - 1)
-    print_tree(m, root.right, col + pow(2, tree_height - 2), row + 1, tree_height - 1)
-
-
-def tree_printer(tree):
-    h = height(tree.root)
-    col = get_col(h)
-    m = [[0 for _ in range(col)] for __ in range(h)]
-    print_tree(m, tree.root, col // 2, 0, h)
-    for i in m:
-        for j in i:
-            if j == 0:
-                print(" ", end=" ")
-            else:
-                print(j, end=" ")
-        print("")
-
-
 """ Generates an array of random numbers between 0 and 99. Array size is chosen by the user. """
 def generate_random_integer_set(a):
     array = []
@@ -116,45 +97,10 @@ def generate_random_integer_set(a):
     return array
 
 
-def print_spaces(n, node):
-    for i in range(n):
-        print("\t", end="")
-    if node is None:
-        print("  ", end="")
-    else:
-        print(node.element, end="")
-
-
 def height_of_tree(node):
     if node is None:
         return 0
     return 1 + max(height_of_tree(node.left), height_of_tree(node.right))
-
-
-# def print_binary_tree(node):
-#     tree_level = []
-#     temp = []
-#     tree_level.append(node)
-#     counter = 0
-#     tree_height = height_of_tree(node) - 1
-#     number_of_elements = 2 ** (tree_height + 1) - 1
-#     while counter <= tree_height:
-#         node = tree_level.pop(0)
-#         if len(temp) == 0:
-#             print_spaces(int(number_of_elements / (2 ** (counter + 1))), node)
-#         else:
-#             print_spaces(int(number_of_elements / (2 ** counter)), node)
-#         if node is None:
-#             temp.append(None)
-#             temp.append(None)
-#         else:
-#             temp.append(node.left)
-#             temp.append(node.right)
-#         if len(tree_level) == 0:
-#             print("\n")
-#             tree_level = temp
-#             temp = []
-#             counter += 1
 
 # Source: https://stackoverflow.com/questions/34012886/print-binary-tree-level-by-level-in-python/72497198#72497198
 def print_binary_tree_structure(root):
@@ -198,11 +144,15 @@ def print_binary_tree_structure(root):
 
 def main():
     sequence = [9, -1, 45, 6, 8, 21, 34, 5, 55, 65, 543, 18, 90, 122, 132, 0, 66, 100, -12, 17]
-    sorted_arr = []
-    sequence_2 = generate_random_integer_set(20)
+    #sorted_arr = []
+    #sequence_2 = generate_random_integer_set(20)
 
     print(sequence)
     print(sort_for_bst_insertion(sequence))
+
+    root = sort_array_for_bst_insertion(sequence)
+    print_pre_order(root)
+    print_binary_tree_structure(root)
 
     # print("First sequence of numbers, unsorted:")
     # for i in sequence:
