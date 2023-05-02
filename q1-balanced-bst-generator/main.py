@@ -44,11 +44,11 @@ def sequential_bst_insert(root, element):
         if root.element is element:
             return root
         elif root.element < element:
+            node = TreeNode(element)
             root.right = sequential_bst_insert(root.right, element)
         else:
             root.left = sequential_bst_insert(root.left, element)
     return root
-
 
 
 """ A recursive algorithm that sorts a given array of integers such that when the elements are
