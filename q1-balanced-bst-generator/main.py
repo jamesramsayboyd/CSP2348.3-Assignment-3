@@ -7,6 +7,21 @@ class TreeNode:
         self.left = None
         self.right = None
 
+    def insert(self, element):
+        if self.element:
+            if element < self.element:
+                if self.left is None:
+                    self.left = TreeNode(element)
+                else:
+                    self.left.insert(element)
+            elif element > self.element:
+                if self.element is None:
+                    self.right = TreeNode(element)
+                else:
+                    self.right.insert(element)
+        else:
+            self.element = element
+
 
 # Source: CSP2348_M6_Binary Trees.pptx
 class BinaryTree:
@@ -38,13 +53,12 @@ def sort_for_bst_insertion(array):
 
 
 def sequential_bst_insert(root, element):
-    if root is None:
+    if root.element is None:
         return TreeNode(element)
     else:
         if root.element is element:
             return root
         elif root.element < element:
-            node = TreeNode(element)
             root.right = sequential_bst_insert(root.right, element)
         else:
             root.left = sequential_bst_insert(root.left, element)
@@ -148,11 +162,20 @@ def main():
     #sequence_2 = generate_random_integer_set(20)
 
     print(sequence)
-    print(sort_for_bst_insertion(sequence))
+    sorted_sequence = sort_for_bst_insertion(sequence)
+    print(sorted_sequence)
+    root = TreeNode
 
-    root = sort_array_for_bst_insertion(sequence)
+    for i in sorted_sequence:
+        root.insert(root, i)
     print_pre_order(root)
-    print_binary_tree_structure(root)
+
+    # for i in sequence:
+    #     insert_into_bst(root, i)
+    #
+    # #root = sort_array_for_bst_insertion(sequence)
+    # print_pre_order(root)
+    # #print_binary_tree_structure(root)
 
     # print("First sequence of numbers, unsorted:")
     # for i in sequence:
