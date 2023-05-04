@@ -1,7 +1,7 @@
 """
 James Boyd 10629572
 CSP2348 Data Structures, Semester 1 2023
-Assignment 3, Question 1
+Assignment 3, Question 2
 """
 
 import random
@@ -199,36 +199,45 @@ def print_binary_tree_structure(root):
         print(pstr)
 
 
+""" Prompts the user to enter a valid input, i.e. an integer between 0 and the highest numbered choice
+featured within the numbered choice menu (provided as an argument)
+"""
+def take_only_valid_input(max_value):
+    while True:
+        user_input = input("Enter choice: ")
+        if user_input.isdigit():
+            user_input = int(user_input)
+            if 0 < user_input < max_value:
+                return user_input
+        print("ERROR: Enter a valid integer between 1 and", max_value - 1)
+        print()
+
+
 def main():
-    sequence = [9, -1, 45, 6, 8, 21, 34, 5, 55, 65, 543, 18, 90, 122, 132, 0, 66, 100, -12, 17]
+    while True:
+        print("1. Pre-load a sequence of integers to build a BST\n"
+              "2. Manually enter integer values, one by one, to build a BST\n"
+              "3. Exit")
+        print()
+        user_choice = take_only_valid_input(4)
+        print()
 
-    print("Sequence 1:")
-    print(sequence)
-    sorted_sequence = sort_for_bst_insertion(sequence)
-    print("Sequence 1 (sorted for BST insertion):")
-    print(sorted_sequence)
-    tree = BinaryTree()
-
-    for i in sorted_sequence:
-        tree.insert(i)
-
-    print("Sequence 1 inserted into Binary Search Tree:")
-    print_binary_tree_structure(tree.get_root())
-
-    print()
-    print("Sequence 2:")
-    sequence_2 = generate_random_integer_set(20)
-    print(sequence_2)
-    sorted_sequence_2 = sort_for_bst_insertion(sequence_2)
-    print("Sequence 2 (sorted for BST insertion):")
-    print(sorted_sequence_2)
-    tree.clear()
-
-    for i in sorted_sequence_2:
-        tree.insert(i)
-
-    print("Sequence 1 inserted into Binary Search Tree:")
-    print_binary_tree_structure(tree.get_root())
+        if user_choice == 1:
+            print("1. Display the tree shape of current BST, and then show the pre-order, in-order,"
+                  " post-order and inverse-in-order traversal sequences of the BST\n"
+                  "2. Show all leaf nodes of the BST, and all non-leaf nodes (separately)\n"
+                  "3. Show a sub-tree and count its nodes\n"
+                  "4. Show the depth of a given node in the BST\n"
+                  "5. Show the depth of a subtree of the BST\n"
+                  "6. Insert a new integer key into the bST\n"
+                  "7. Delete an integer key from the BST\n"
+                  "8. Exit")
+            user_choice = take_only_valid_input(9)
+        elif user_choice == 2:
+            print("Enter value: ")
+        elif user_choice == 3:
+            print("Goodbye")
+            break
 
 
 main()
