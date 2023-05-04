@@ -65,7 +65,7 @@ class BinaryTree:
         return self.size
 
     # Inorder traversal from the root
-    def inorder(self):
+    def in_order(self):
         self.in_order_helper(self.root)
 
     # Inorder traversal from a subtree
@@ -109,6 +109,59 @@ class BinaryTree:
     # Return the root of the tree
     def get_root(self):
         return self.root
+
+    """ Q2 a) The Inverse In-Order traversal algorithm """
+    def inverse_in_order(self):
+        self.inverse_in_order_helper(self.root)
+
+    def inverse_in_order_helper(self, r):
+        if r is not None:
+            self.inverse_in_order_helper(r.right)
+            print(r.element, end=" ")
+            self.inverse_in_order_helper(r.left)
+
+    """ Q2 b) A function to print all leaf nodes of the BST """
+    def leaf_bst(self):
+        self.leaf_bst_helper(self.root)
+
+    def leaf_bst_helper(self, r):
+        if r is not None:
+            self.leaf_bst_helper(r.left)
+            if (r.left is None) and (r.right is None):
+                print(r.element, end=" ")
+            self.leaf_bst_helper(r.right)
+
+    """ Q2 b) A function to print all non-leaf nodes of the BST """
+    def non_leaf_bst(self):
+        self.non_leaf_bst_helper(self.root)
+
+    def non_leaf_bst_helper(self, r):
+        if r is not None:
+            self.non_leaf_bst_helper(r.left)
+            if (r.left is not None) or (r.right is not None):
+                print(r.element, end=" ")
+            self.non_leaf_bst_helper(r.right)
+
+    """ Q3 c) A function that, for a given node N in a BST, counts the total number
+    of nodes of the sub-tree rooted at N, and prints all nodes (including N) of 
+    the subtree
+    """
+    def total_nodes_bst(self, n):
+        return
+
+    """ Q3 d) A function that calculates the depth of a given node N in a BST """
+    def depth_node_bst(self, n):
+        return
+
+    """ Q3 e) A function that calculates the depth of a subtree rooted at a given
+    node N in a BST
+    """
+    def subtree_bst(self, n):
+        return
+
+    """ Q3 f) A function that deletes a node from a BST """
+    def delete_node(self, key):
+        return
 
 
 """ A class representing a node of a Binary Search Tree """
@@ -214,30 +267,48 @@ def take_only_valid_input(max_value):
 
 
 def main():
-    while True:
-        print("1. Pre-load a sequence of integers to build a BST\n"
-              "2. Manually enter integer values, one by one, to build a BST\n"
-              "3. Exit")
-        print()
-        user_choice = take_only_valid_input(4)
-        print()
+    sequence = [58, 84, 68, 23, 38, 82, 26, 17, 24, 106, 95, 48, 88, 54, 50, 51, 53, 49, -6, -46]
+    tree = BinaryTree()
+    for i in sequence:
+        tree.insert(i)
 
-        if user_choice == 1:
-            print("1. Display the tree shape of current BST, and then show the pre-order, in-order,"
-                  " post-order and inverse-in-order traversal sequences of the BST\n"
-                  "2. Show all leaf nodes of the BST, and all non-leaf nodes (separately)\n"
-                  "3. Show a sub-tree and count its nodes\n"
-                  "4. Show the depth of a given node in the BST\n"
-                  "5. Show the depth of a subtree of the BST\n"
-                  "6. Insert a new integer key into the bST\n"
-                  "7. Delete an integer key from the BST\n"
-                  "8. Exit")
-            user_choice = take_only_valid_input(9)
-        elif user_choice == 2:
-            print("Enter value: ")
-        elif user_choice == 3:
-            print("Goodbye")
-            break
+    print_binary_tree_structure(tree.get_root())
+
+    #tree.in_order()
+    print()
+    #tree.inverse_in_order()
+    print("In order traversal: ")
+    tree.in_order()
+    print("\nOnly leaf nodes:")
+    tree.leaf_bst()
+    print("\nOnly non-leaf nodes:")
+    tree.non_leaf_bst()
+
+
+    # while True:
+    #     print("1. Pre-load a sequence of integers to build a BST\n"
+    #           "2. Manually enter integer values, one by one, to build a BST\n"
+    #           "3. Exit")
+    #     print()
+    #     user_choice = take_only_valid_input(4)
+    #     print()
+    #
+    #     if user_choice == 1:
+    #         print("1. Display the tree shape of current BST, and then show the pre-order, in-order,"
+    #               " post-order and inverse-in-order traversal sequences of the BST\n"
+    #               "2. Show all leaf nodes of the BST, and all non-leaf nodes (separately)\n"
+    #               "3. Show a sub-tree and count its nodes\n"
+    #               "4. Show the depth of a given node in the BST\n"
+    #               "5. Show the depth of a subtree of the BST\n"
+    #               "6. Insert a new integer key into the bST\n"
+    #               "7. Delete an integer key from the BST\n"
+    #               "8. Exit")
+    #         user_choice = take_only_valid_input(9)
+    #     elif user_choice == 2:
+    #         print("Enter value: ")
+    #     elif user_choice == 3:
+    #         print("Goodbye")
+    #         break
 
 
 main()
