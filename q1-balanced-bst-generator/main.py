@@ -1,36 +1,126 @@
+"""
+James Boyd 10629572
+CSP2348 Data Structures, Semester 1 2023
+Assignment 3, Question 1
+"""
+
 import random
 
-# Source: CSP2348_M6_Binary Trees.pptx
-class TreeNode:
-    def __init__(self, e):
-        self.element = e
-        self.left = None
-        self.right = None
-
-    def insert(self, element):
-        if self.element:
-            if element < self.element:
-                if self.left is None:
-                    self.left = TreeNode(element)
-                else:
-                    self.left.insert(element)
-            elif element > self.element:
-                if self.element is None:
-                    self.right = TreeNode(element)
-                else:
-                    self.right.insert(element)
-        else:
-            self.element = element
-
-
-# Source: CSP2348_M6_Binary Trees.pptx
+""" A class representing a Binary Search Tree, implementing several methods
+for traversing the structure, inserting/searching/deleting nodes
+"""
 class BinaryTree:
     def __init__(self):
         self.root = None
         self.size = 0
 
+    # Return True if the element is in the tree
+    def search(self, e):
+        current = self.root  # Start from the root
 
-""" A recursive algorithm that sorts a given array of integers such that when the elements are
+        while current is not None:
+            if e < current.element:
+                current = current.left
+            elif e > current.element:
+                current = current.right
+            else:  # element matches current.element
+                return True  # Element is found
+
+        return False
+
+    # Insert element e into the binary search tree
+    # Return True if the element is inserted successfully
+    def insert(self, e):
+        if self.root is None:
+            self.root = self.create_new_node(e)  # Create a new root
+        else:
+            # Locate the parent node
+            parent = None
+            current = self.root
+            while current is not None:
+                if e < current.element:
+                    parent = current
+                    current = current.left
+                elif e > current.element:
+                    parent = current
+                    current = current.right
+                else:
+                    return False  # Duplicate node? not inserted
+
+            # Create the new node and attach it to the parent node
+            if e < parent.element:
+                parent.left = self.create_new_node(e)
+            else:
+                parent.right = self.create_new_node(e)
+
+        self.size += 1  # Increase tree size
+        return True  # Element inserted
+
+    # Create a new TreeNode for element e
+    def create_new_node(self, e):
+        return TreeNode(e)
+
+    # Return the size of the tree
+    def get_size(self):
+        return self.size
+
+    # Inorder traversal from the root
+    def inorder(self):
+        self.in_order_helper(self.root)
+
+    # Inorder traversal from a subtree
+    def in_order_helper(self, r):
+        if r is not None:
+            self.in_order_helper(r.left)
+            print(r.element, end=" ")
+            self.in_order_helper(r.right)
+
+    # Postorder traversal from the root
+    def post_order(self):
+        self.post_order_helper(self.root)
+
+    # Postorder traversal from a subtree
+    def post_order_helper(self, root):
+        if root is not None:
+            self.post_order_helper(root.left)
+            self.post_order_helper(root.right)
+            print(root.element, end=" ")
+
+    # Preorder traversal from the root
+    def pre_order(self):
+        self.pre_order_helper(self.root)
+
+    # Preorder traversal from a subtree
+    def pre_order_helper(self, root):
+        if root is not None:
+            print(root.element, end=" ")
+            self.pre_order_helper(root.left)
+            self.pre_order_helper(root.right)
+
+    # Return true if the tree is empty
+    def is_empty(self):
+        return self.size == 0
+
+    # Remove all elements from the tree
+    def clear(self):
+        self.root = None
+        self.size = 0
+
+    # Return the root of the tree
+    def get_root(self):
+        return self.root
+
+
+""" A class representing a node of a Binary Search Tree """
+class TreeNode:
+    def __init__(self, e):
+        self.element = e
+        self.left = None  # Point to the left node, default None
+        self.right = None  # Point to the right node, default None
+
+
+""" Q1: Balanced BST Generation
+A recursive algorithm that sorts a given array of integers such that when the elements are
 inserted into an initially empty Binary Search Tree, the resulting BST will be balanced. Returns
 a newly sorted array.
 """
@@ -52,57 +142,6 @@ def sort_for_bst_insertion(array):
     return sort(array)
 
 
-def sequential_bst_insert(root, element):
-    if root.element is None:
-        return TreeNode(element)
-    else:
-        if root.element is element:
-            return root
-        elif root.element < element:
-            root.right = sequential_bst_insert(root.right, element)
-        else:
-            root.left = sequential_bst_insert(root.left, element)
-    return root
-
-
-""" A recursive algorithm that sorts a given array of integers such that when the elements are
-inserted into an initially empty Binary Search Tree, the resulting BST will be balanced.
-"""
-def sort_array_for_bst_insertion(arr):
-    if not arr:
-        return None  # base case for recursive algorithm
-
-    arr.sort()  # Sort array in ascending order first
-    midpoint = (len(arr)) // 2  # Find middle element of array
-    node = TreeNode(arr[midpoint])  # Middle element instantiated as node of BST
-
-    node.left = sort_array_for_bst_insertion(arr[:midpoint])  # Recursively find midpoint of left side of array
-    node.right = sort_array_for_bst_insertion(arr[midpoint + 1:])  # # Recursively find midpoint of right side of array
-    return node
-
-
-def print_pre_order(tree_node):
-    if not tree_node:
-        return
-
-    print(tree_node.element, end="  ")
-    print_pre_order(tree_node.left)
-    print_pre_order(tree_node.right)
-
-
-def insert_into_bst(root, e):
-    if root is None:
-        return TreeNode(e)
-    else:
-        if root.element is e:
-            return root
-        elif root.element < e:
-            root.right = insert_into_bst(root.right, e)
-        else:
-            root.left = insert_into_bst(root.left, e)
-    return root
-
-
 """ Generates an array of random numbers between 0 and 99. Array size is chosen by the user. """
 def generate_random_integer_set(a):
     array = []
@@ -116,7 +155,11 @@ def height_of_tree(node):
         return 0
     return 1 + max(height_of_tree(node.left), height_of_tree(node.right))
 
-# Source: https://stackoverflow.com/questions/34012886/print-binary-tree-level-by-level-in-python/72497198#72497198
+
+""" A method to print the tree-shaped structure of a binary search tree
+Source: Mera, A. (2022, Jun 4). print binary tree level by level in python. StackOverflow
+     https://stackoverflow.com/questions/34012886/print-binary-tree-level-by-level-in-python/72497198#72497198
+"""
 def print_binary_tree_structure(root):
 
     number_of_levels = height_of_tree(root)
@@ -158,59 +201,35 @@ def print_binary_tree_structure(root):
 
 def main():
     sequence = [9, -1, 45, 6, 8, 21, 34, 5, 55, 65, 543, 18, 90, 122, 132, 0, 66, 100, -12, 17]
-    #sorted_arr = []
-    #sequence_2 = generate_random_integer_set(20)
 
+    print("Sequence 1:")
     print(sequence)
     sorted_sequence = sort_for_bst_insertion(sequence)
+    print("Sequence 1 (sorted for BST insertion):")
     print(sorted_sequence)
-    root = TreeNode
+    print("Sequence 1 inserted into Binary Search Tree:")
+    tree = BinaryTree()
 
     for i in sorted_sequence:
-        root.insert(root, i)
-    print_pre_order(root)
+        tree.insert(i)
 
-    # for i in sequence:
-    #     insert_into_bst(root, i)
-    #
-    # #root = sort_array_for_bst_insertion(sequence)
-    # print_pre_order(root)
-    # #print_binary_tree_structure(root)
+    print("Sequence 1 inserted into Binary Search Tree:")
+    print_binary_tree_structure(tree.get_root())
 
-    # print("First sequence of numbers, unsorted:")
-    # for i in sequence:
-    #     print(i, end="  ")
-    # print()
-    # root = sort_array_for_bst_insertion(sequence)
-    # print("First sequence of numbers, sorted for BST insertion:")
-    # print_pre_order(root)
-    # # print()
-    # # print("Binary search tree shape:")
-    # # print()
-    # #
-    # # print("Second sequence of numbers, unsorted:")
-    # # for i in sequence_2:
-    # #     print(i, end="  ")
-    # # print()
-    # # root = sort_array_for_bst_insertion(sequence_2)
-    # # print("First sequence of numbers, sorted for BST insertion:")
-    # # print_pre_order(root)
-    # # print()
-    # # print("Binary search tree shape:")
-    # # print()
-    #
-    # root = sort_array_for_bst_insertion(sequence)
-    # my_tree = BinaryTree()
-    # my_tree.root = root
-    # #tree_printer(my_tree)
-    # #print_binary_tree(root)
-    #
-    # root = sort_array_for_bst_insertion(sequence_2)
-    # my_tree = BinaryTree()
-    # my_tree.root = root
-    # #tree_printer(my_tree)
-    # #print_binary_tree(root)
-    # print_binary_tree_structure(root)
+    print()
+    print("Sequence 2:")
+    sequence_2 = generate_random_integer_set(20)
+    print(sequence_2)
+    sorted_sequence_2 = sort_for_bst_insertion(sequence_2)
+    print("Sequence 2 (sorted for BST insertion):")
+    print(sorted_sequence_2)
+    tree.clear()
+
+    for i in sorted_sequence_2:
+        tree.insert(i)
+
+    print("Sequence 1 inserted into Binary Search Tree:")
+    print_binary_tree_structure(tree.get_root())
 
 
 main()
