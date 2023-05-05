@@ -147,16 +147,36 @@ class BinaryTree:
     the subtree
     """
     def total_nodes_bst(self, n):
-        return
+        self.total_nodes_bst_helper(self.root)
+
+    def total_nodes_bst_helper(self, root):
+        if root is not None:
+            print(root.element, end=" ")
+            self.total_nodes_bst_helper(root.left)
+            self.total_nodes_bst_helper(root.right)
 
     """ Q3 d) A function that calculates the depth of a given node N in a BST """
     def depth_node_bst(self, n):
-        return
+        current = self.root  # Start from the root
+        depth_counter = 0
+
+        while current is not None:
+            if n < current.element:
+                current = current.left
+                depth_counter += 1
+            elif n > current.element:
+                current = current.right
+                depth_counter += 1
+            else:  # element matches current.element
+                print("Depth of node: ", depth_counter)  # Element is found
+                return
+
+        print("Node not found")
 
     """ Q3 e) A function that calculates the depth of a subtree rooted at a given
     node N in a BST
     """
-    def subtree_bst(self, n):
+    def depth_subtree_bst(self, n):
         return
 
     """ Q3 f) A function that deletes a node from a BST """
@@ -252,6 +272,65 @@ def print_binary_tree_structure(root):
         print(pstr)
 
 
+def print_tree(root, element="element", left="left",
+              right="right"):  ##  https://stackoverflow.com/questions/34012886/print-binary-tree-level-by-level-in-python
+    def display(root, element=element, left=left, right=right):  ##  AUTHOR: Original: J.V.     Edit: BcK
+        """Returns list of strings, width, height, and horizontal coordinate of the root."""
+        # No child.
+        if getattr(root, right) is None and getattr(root, left) is None:
+            line = '%s' % getattr(root, element)
+            width = len(line)
+            height = 1
+            middle = width // 2
+            return [line], width, height, middle
+
+        # Only left child.
+        if getattr(root, right) is None:
+            lines, n, p, x = display(getattr(root, left))
+            s = '%s' % getattr(root, element)
+            u = len(s)
+            first_line = (x + 1) * ' ' + (n - x - 1) * '_' + s
+            second_line = x * ' ' + '/' + (n - x - 1 + u) * ' '
+            shifted_lines = [line + u * ' ' for line in lines]
+            return [first_line, second_line] + shifted_lines, n + u, p + 2, n + u // 2
+
+        # Only right child.
+        if getattr(root, left) is None:
+            lines, n, p, x = display(getattr(root, right))
+            s = '%s' % getattr(root, element)
+            u = len(s)
+            first_line = s + x * '_' + (n - x) * ' '
+            second_line = (u + x) * ' ' + '\\' + (n - x - 1) * ' '
+            shifted_lines = [u * ' ' + line for line in lines]
+            return [first_line, second_line] + shifted_lines, n + u, p + 2, u // 2
+
+        # Two children.
+        left, n, p, x = display(getattr(root, left))
+        right, m, q, y = display(getattr(root, right))
+        s = '%s' % getattr(root, element)
+        u = len(s)
+        first_line = (x + 1) * ' ' + (n - x - 1) * '_' + s + y * '_' + (m - y) * ' '
+        second_line = x * ' ' + '/' + (n - x - 1 + u + y) * ' ' + '\\' + (m - y - 1) * ' '
+        if p < q:
+            left += [n * ' '] * (q - p)
+        elif q < p:
+            right += [m * ' '] * (p - q)
+        zipped_lines = zip(left, right)
+        lines = [first_line, second_line] + [a + u * ' ' + b for a, b in zipped_lines]
+        return lines, n + m + u, max(p, q) + 2, n + u // 2
+
+    lines = []
+    if root != None:
+        lines, *_ = display(root, element, left, right)
+    print("\t== Binary Tree: shape ==")
+    print()
+    if lines == []:
+        print("\t  No tree found")
+    for line in lines:
+        print("\t", line)
+    print()
+
+
 """ Prompts the user to enter a valid input, i.e. an integer between 0 and the highest numbered choice
 featured within the numbered choice menu (provided as an argument)
 """
@@ -268,11 +347,13 @@ def take_only_valid_input(max_value):
 
 def main():
     sequence = [58, 84, 68, 23, 38, 82, 26, 17, 24, 106, 95, 48, 88, 54, 50, 51, 53, 49, -6, -46]
+    #sequence = [9, -1, 45, 6, 8, 21, 34, 5, 55, 65, 543, 18, 90, 122, 132, 0, 66, 100, -12, 17]
     tree = BinaryTree()
     for i in sequence:
         tree.insert(i)
 
-    print_binary_tree_structure(tree.get_root())
+    #print_binary_tree_structure(tree.get_root())
+    print_tree(tree.get_root())
 
     #tree.in_order()
     print()
@@ -283,6 +364,10 @@ def main():
     tree.leaf_bst()
     print("\nOnly non-leaf nodes:")
     tree.non_leaf_bst()
+    print("\nTotal nodes:")
+    tree.total_nodes_bst(23)
+    print()
+    tree.depth_node_bst(-46)
 
 
     # while True:
