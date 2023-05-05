@@ -147,7 +147,20 @@ class BinaryTree:
     the subtree
     """
     def total_nodes_bst(self, n):
-        self.total_nodes_bst_helper(self.root)
+        sub_root = self.total_nodes_bst_search_helper(n)
+        self.total_nodes_bst_helper(sub_root)
+
+    def total_nodes_bst_search_helper(self, n):
+        current = self.root  # Start from the root
+
+        while current is not None:
+            if n < current.element:
+                current = current.left
+            elif n > current.element:
+                current = current.right
+            else:  # element matches current.element
+                return current
+        return None
 
     def total_nodes_bst_helper(self, root):
         if root is not None:
@@ -365,7 +378,7 @@ def main():
     print("\nOnly non-leaf nodes:")
     tree.non_leaf_bst()
     print("\nTotal nodes:")
-    tree.total_nodes_bst(23)
+    tree.total_nodes_bst(54)
     print()
     tree.depth_node_bst(-46)
 
