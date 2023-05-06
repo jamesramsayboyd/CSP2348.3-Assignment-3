@@ -38,6 +38,7 @@ class BinaryTree:
                 current = current.right
             else:  # element matches current.element
                 return current
+
         return None
 
     # Insert element e into the binary search tree
@@ -188,8 +189,6 @@ class BinaryTree:
                 print("Depth of node: ", self.size)  # Element is found
                 return
 
-        print("Node not found")
-
     """ Q3 e) A function that calculates the depth of a subtree rooted at a given
     node N in a BST
     """
@@ -204,7 +203,41 @@ class BinaryTree:
 
     """ Q3 f) A function that deletes a node from a BST """
     def delete_node(self, key):
-        return
+        root = self.get_root()
+        self.delete_node_helper(root, key)
+
+    def delete_node_helper(self, root, key):
+        if not root:
+            return root  # If curr is null, terminate
+
+        if root.element > key:  # Searching for node to delete, move down left branch
+            root.left = self.delete_node_helper(root.left, key)
+        elif root.element < key:  # Searching for node to delete, move down right branch
+            root.right = self.delete_node_helper(root.right, key)
+
+        else:  # If node to delete is found...
+            if not root.right:  # If node to delete has no right child, new root is root.left
+                return root.left
+            if not root.left:  # If node to delete has no left child, new root is root.right
+                return root.right
+
+            # If node to delete has both left and right children...
+            temp_node = root
+            temp_node_child = root.right  # A temp node to store the right child
+            # Find the smallest element in delete node's subtree (i.e. go all the way down left branch)
+            while temp_node_child.left:
+                temp_node = temp_node_child  # Store smallest node/element
+                temp_node_child = temp_node.left
+
+            if temp_node is not root:
+                temp_node.left = temp_node_child.right
+            else:
+                temp_node.right = temp_node_child.right
+
+            root.element = temp_node_child.element
+            # Delete smallest node in right subtree
+            #root.right = self.delete_node_helper(root.right, root.element)
+        return root
 
 
 """ A class representing a node of a Binary Search Tree """
@@ -215,44 +248,12 @@ class TreeNode:
         self.right = None  # Point to the right node, default None
 
 
-""" Q1: Balanced BST Generation
-A recursive algorithm that sorts a given array of integers such that when the elements are
-inserted into an initially empty Binary Search Tree, the resulting BST will be balanced. Returns
-a newly sorted array.
-"""
-def sort_for_bst_insertion(array):
-    sorted_arr = []
-
-    def sort(arr):
-        if len(arr) == 0:
-            return
-
-        arr.sort()
-        mid = (len(arr)) // 2
-        sorted_arr.append(arr[mid])
-
-        sort(arr[0:mid])
-        sort(arr[mid + 1:])
-        return sorted_arr
-
-    return sort(array)
-
-
-""" Generates an array of random numbers between 0 and 99. Array size is chosen by the user. """
-def generate_random_integer_set(a):
-    array = []
-    for i in range(a):
-        array.append(random.randint(-99, 99))
-    return array
-
-
 """ A method to print the tree-shaped structure of a binary search tree
-Source: Mera, A. (2022, Jun 4). print binary tree level by level in python. StackOverflow
-     https://stackoverflow.com/questions/34012886/print-binary-tree-level-by-level-in-python/72497198#72497198
+Source: J. V., BcK (2021, Jan 23). print binary tree level by level in python. StackOverflow
+     https://stackoverflow.com/questions/34012886/print-binary-tree-level-by-level-in-python/65865825#65865825
 """
-def print_tree(root, element="element", left="left",
-              right="right"):  ##  https://stackoverflow.com/questions/34012886/print-binary-tree-level-by-level-in-python
-    def display(root, element=element, left=left, right=right):  ##  AUTHOR: Original: J.V.     Edit: BcK
+def print_tree(root, element="element", left="left", right="right"):
+    def display(root, element=element, left=left, right=right):
         """Returns list of strings, width, height, and horizontal coordinate of the root."""
         # No child.
         if getattr(root, right) is None and getattr(root, left) is None:
@@ -323,6 +324,10 @@ def take_only_valid_input(min_value, max_value):
         print("ERROR: Enter a valid integer between", min_value + 1, "and", max_value - 1)
         print()
 
+
+""" A function to display the level 2 menu of the console menu, allowing users to perform
+several operations on the Binary Search Tree provided as a parameter
+"""
 def level_2_menu(tree):
     while True:
         print("1. Display the tree shape of current BST, and then show the pre-order, in-order,"
@@ -336,7 +341,7 @@ def level_2_menu(tree):
               "8. Return to initial menu\n")
         print("Enter choice:")
         user_input = take_only_valid_input(0, 9)
-        if user_input == 1:
+        if user_input == 1:  # Displays tree shape and traversal methods
             print_tree(tree.get_root())
             print("Pre-Order traversal:")
             tree.pre_order()
@@ -347,43 +352,62 @@ def level_2_menu(tree):
             print("\nInverse In-Order traversal:")
             tree.inverse_in_order()
             print("\n")
-        elif user_input == 2:
+        elif user_input == 2:  # Shows leaf/non-leaf nodes
             print("Showing all leaf nodes:")
             tree.leaf_bst()
             print("\nShowing all non-leaf nodes:")
             tree.non_leaf_bst()
             print("\n")
-        elif user_input == 3:
+        elif user_input == 3:  # Shows subtree of given node
             print("Enter the integer key of a node to show its subtree:")
             node_key = take_only_valid_input(-1000, 1000)
-            tree.total_nodes_bst(node_key)
+            if search(node_key):
+                tree.total_nodes_bst(node_key)
+            else:
+                print("ERROR: Node", n, "not found!")
             print("\n")
-        elif user_input == 4:
+        elif user_input == 4:  # Finds depth of given node
             print("Enter the integer key of a node to find its depth:")
             node_key = take_only_valid_input(-1000, 1000)
-            tree.depth_node_bst(node_key)
+            if search(node_key):
+                tree.depth_node_bst(node_key)
+            else:
+                print("ERROR: Node", n, "not found!")
             print("\n")
-        elif user_input == 5:
+        elif user_input == 5:  # Finds depth of given node's subtree
             print("Enter the integer key of a node to find the depth of its subtree:")
             node_key = take_only_valid_input(-1000, 1000)
-            tree.depth_subtree_bst(node_key)
+            if search(node_key):
+                tree.depth_subtree_node_bst(node_key)
+            else:
+                print("ERROR: Node", n, "not found!")
             print("\n")
-        elif user_input == 6:
+        elif user_input == 6:  # Adds an integer to the BST
             print("Enter an integer to add it to the BST:")
             add_node = take_only_valid_input(-1000, 1000)
-            tree.insert(add_node)
-            print_tree(tree.get_root())
+            if not tree.search(add_node):
+                tree.insert(add_node)
+                print("Node inserted. Showing Inverse In-Order traversal:")
+                tree.inverse_in_order()
+            else:
+                print("ERROR: Node key", add_node, "already exists in the BST!")
             print("\n")
-        elif user_input == 7:
+        elif user_input == 7:  # Deletes an integer from the BST
             print("Enter an integer to delete it from the BST:")
             delete_node = take_only_valid_input(-1000, 1000)
-            tree.delete_node(delete_node)
-            print_tree(tree.get_root())
+            if tree.search(delete_node):
+                tree.delete_node(delete_node)
+                print("Node deleted. Showing Inverse In-Order traversal:")
+                tree.inverse_in_order()
+            else:
+                print("ERROR: Node key", delete_node, "not found!")
             print("\n")
-        elif user_input == 8:
+        else:  # Returns to level 1 menu
             print()
             return
 
+
+""" Prompts the user to enter integers one-by-one to manually create a Binary Search Tree """
 def manually_create_bst(size):
     sequence = []
     for i in range(size):
@@ -399,6 +423,7 @@ def manually_create_bst(size):
 
 
 def main():
+    sample_dataset = [58, 84, 68, 23, 38, 82, 26, 17, 24, 106, 95, 48, 88, 54, 50, 51, 53, 49, -6, -46]
 
     while True:
         print("1. Pre-load a sequence of integers to build a BST\n"
@@ -410,14 +435,10 @@ def main():
         print()
 
         if user_choice == 1:
-            print("Enter size of tree:")
-            tree_size = take_only_valid_input(0, 101)
-            print("Generating randomised sequence of integers...")
-            sequence = generate_random_integer_set(tree_size)
-            print("Sequence:", sequence)
+            print("Using sample dataset", sample_dataset)
             print()
             tree = BinaryTree()
-            for i in sequence:
+            for i in sample_dataset:
                 tree.insert(i)
             level_2_menu(tree)
 
