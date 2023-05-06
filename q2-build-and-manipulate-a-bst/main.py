@@ -148,12 +148,12 @@ class BinaryTree:
     """
     def total_nodes_bst(self, n):
         self.size = 0
-        sub_root = self.total_nodes_bst_search_helper(n)
+        sub_root = self.subtree_root_node_finder(n)
         self.total_nodes_bst_helper(sub_root)
         print("\nNo. of nodes in sub-tree: ", self.size)
         print_tree(sub_root)
 
-    def total_nodes_bst_search_helper(self, n):
+    def subtree_root_node_finder(self, n):
         current = self.root  # Start from the root
 
         while current is not None:
@@ -175,17 +175,17 @@ class BinaryTree:
     """ Q3 d) A function that calculates the depth of a given node N in a BST """
     def depth_node_bst(self, n):
         current = self.root  # Start from the root
-        depth_counter = 0
+        self.size = 0
 
         while current is not None:
             if n < current.element:
                 current = current.left
-                depth_counter += 1
+                self.size += 1
             elif n > current.element:
                 current = current.right
-                depth_counter += 1
+                self.size += 1
             else:  # element matches current.element
-                print("Depth of node: ", depth_counter)  # Element is found
+                print("Depth of node: ", self.size)  # Element is found
                 return
 
         print("Node not found")
@@ -194,7 +194,13 @@ class BinaryTree:
     node N in a BST
     """
     def depth_subtree_bst(self, n):
-        return
+        sub_root = self.subtree_root_node_finder(n)
+        print("Depth of subtree rooted at", n, ":", self.depth_subtree_bst_helper(sub_root))
+
+    def depth_subtree_bst_helper(self, root):
+        if root is None:
+            return 0
+        return 1 + max(self.depth_subtree_bst_helper(root.left), self.depth_subtree_bst_helper(root.right))
 
     """ Q3 f) A function that deletes a node from a BST """
     def delete_node(self, key):
@@ -385,6 +391,7 @@ def main():
     tree.total_nodes_bst(54)
     print()
     tree.depth_node_bst(-46)
+    tree.depth_subtree_bst(106)
 
 
     # while True:
