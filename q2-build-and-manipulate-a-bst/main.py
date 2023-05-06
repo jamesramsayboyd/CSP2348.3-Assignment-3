@@ -28,6 +28,18 @@ class BinaryTree:
 
         return False
 
+    # A modification of the provided search() function that returns a given node of the BST
+    def subtree_root_node_finder(self, n):
+        current = self.root  # Start from the root
+        while current is not None:
+            if n < current.element:
+                current = current.left
+            elif n > current.element:
+                current = current.right
+            else:  # element matches current.element
+                return current
+        return None
+
     # Insert element e into the binary search tree
     # Return True if the element is inserted successfully
     def insert(self, e):
@@ -153,18 +165,6 @@ class BinaryTree:
         print("\nNo. of nodes in sub-tree: ", self.size)
         print_tree(sub_root)
 
-    def subtree_root_node_finder(self, n):
-        current = self.root  # Start from the root
-
-        while current is not None:
-            if n < current.element:
-                current = current.left
-            elif n > current.element:
-                current = current.right
-            else:  # element matches current.element
-                return current
-        return None
-
     def total_nodes_bst_helper(self, root):
         if root is not None:
             print(root.element, end=" ")
@@ -242,59 +242,14 @@ def sort_for_bst_insertion(array):
 def generate_random_integer_set(a):
     array = []
     for i in range(a):
-        array.append(random.randint(0, 99))
+        array.append(random.randint(-99, 99))
     return array
-
-
-def height_of_tree(node):
-    if node is None:
-        return 0
-    return 1 + max(height_of_tree(node.left), height_of_tree(node.right))
 
 
 """ A method to print the tree-shaped structure of a binary search tree
 Source: Mera, A. (2022, Jun 4). print binary tree level by level in python. StackOverflow
      https://stackoverflow.com/questions/34012886/print-binary-tree-level-by-level-in-python/72497198#72497198
 """
-def print_binary_tree_structure(root):
-
-    number_of_levels = height_of_tree(root)
-    width = pow(2, number_of_levels + 1)
-
-    q = [(root, 0, width, 'c')]
-    levels = []
-
-    while (q):
-        node, level, x, align = q.pop(0)
-        if node:
-            if len(levels) <= level:
-                levels.append([])
-
-            levels[level].append([node, level, x, align])
-            seg = width // (pow(2, level + 1))
-            q.append((node.left, level + 1, x - seg, 'l'))
-            q.append((node.right, level + 1, x + seg, 'r'))
-
-    for i, l in enumerate(levels):
-        pre = 0
-        preline = 0
-        linestr = ''
-        pstr = ''
-        seg = width // (pow(2, i + 1))
-        for n in l:
-            valstr = str(n[0].element)
-            if n[3] == 'r':
-                linestr += ' ' * (n[2] - preline - 1 - seg - seg // 2) + '¯' * (seg + seg // 2) + '\\'
-                preline = n[2]
-            if n[3] == 'l':
-                linestr += ' ' * (n[2] - preline - 1) + '/' + '¯' * (seg + seg // 2)
-                preline = n[2] + seg + seg // 2
-            pstr += ' ' * (n[2] - pre - len(valstr)) + valstr  # correct the position according to the number size
-            pre = n[2]
-        print(linestr)
-        print(pstr)
-
-
 def print_tree(root, element="element", left="left",
               right="right"):  ##  https://stackoverflow.com/questions/34012886/print-binary-tree-level-by-level-in-python
     def display(root, element=element, left=left, right=right):  ##  AUTHOR: Original: J.V.     Edit: BcK
@@ -354,70 +309,127 @@ def print_tree(root, element="element", left="left",
     print()
 
 
-""" Prompts the user to enter a valid input, i.e. an integer between 0 and the highest numbered choice
-featured within the numbered choice menu (provided as an argument)
+""" Prompts the user to enter a valid input between minimum and maximum values
+provided as arguments. Used for numbered choice menus (e.g. Press 1 to _____) and
+entering elements of an array
 """
-def take_only_valid_input(max_value):
+def take_only_valid_input(min_value, max_value):
     while True:
-        user_input = input("Enter choice: ")
-        if user_input.isdigit():
+        user_input = input()
+        if user_input.lstrip("-").isdigit(): # Allows for negative integer input
             user_input = int(user_input)
-            if 0 < user_input < max_value:
+            if min_value < user_input < max_value:
                 return user_input
-        print("ERROR: Enter a valid integer between 1 and", max_value - 1)
+        print("ERROR: Enter a valid integer between", min_value + 1, "and", max_value - 1)
         print()
 
+def level_2_menu(tree):
+    while True:
+        print("1. Display the tree shape of current BST, and then show the pre-order, in-order,"
+              " post-order and inverse-in-order traversal sequences of the BST\n"
+              "2. Show all leaf nodes of the BST, and all non-leaf nodes (separately)\n"
+              "3. Show a sub-tree and count its nodes\n"
+              "4. Show the depth of a given node in the BST\n"
+              "5. Show the depth of a subtree of the BST\n"
+              "6. Insert a new integer key into the BST\n"
+              "7. Delete an integer key from the BST\n"
+              "8. Return to initial menu\n")
+        print("Enter choice:")
+        user_input = take_only_valid_input(0, 9)
+        if user_input == 1:
+            print_tree(tree.get_root())
+            print("Pre-Order traversal:")
+            tree.pre_order()
+            print("\nIn-Order traversal:")
+            tree.in_order()
+            print("\nPost-Order traversal:")
+            tree.post_order()
+            print("\nInverse In-Order traversal:")
+            tree.inverse_in_order()
+            print("\n")
+        elif user_input == 2:
+            print("Showing all leaf nodes:")
+            tree.leaf_bst()
+            print("\nShowing all non-leaf nodes:")
+            tree.non_leaf_bst()
+            print("\n")
+        elif user_input == 3:
+            print("Enter the integer key of a node to show its subtree:")
+            node_key = take_only_valid_input(-1000, 1000)
+            tree.total_nodes_bst(node_key)
+            print("\n")
+        elif user_input == 4:
+            print("Enter the integer key of a node to find its depth:")
+            node_key = take_only_valid_input(-1000, 1000)
+            tree.depth_node_bst(node_key)
+            print("\n")
+        elif user_input == 5:
+            print("Enter the integer key of a node to find the depth of its subtree:")
+            node_key = take_only_valid_input(-1000, 1000)
+            tree.depth_subtree_bst(node_key)
+            print("\n")
+        elif user_input == 6:
+            print("Enter an integer to add it to the BST:")
+            add_node = take_only_valid_input(-1000, 1000)
+            tree.insert(add_node)
+            print_tree(tree.get_root())
+            print("\n")
+        elif user_input == 7:
+            print("Enter an integer to delete it from the BST:")
+            delete_node = take_only_valid_input(-1000, 1000)
+            tree.delete_node(delete_node)
+            print_tree(tree.get_root())
+            print("\n")
+        elif user_input == 8:
+            print()
+            return
 
-def main():
-    sequence = [58, 84, 68, 23, 38, 82, 26, 17, 24, 106, 95, 48, 88, 54, 50, 51, 53, 49, -6, -46]
-    #sequence = [9, -1, 45, 6, 8, 21, 34, 5, 55, 65, 543, 18, 90, 122, 132, 0, 66, 100, -12, 17]
+def manually_create_bst(size):
+    sequence = []
+    for i in range(size):
+        print("Enter element no.", i + 1)
+        element = take_only_valid_input(-999, 999)
+        sequence.append(element)
+
+    print("Sequence:", sequence)
     tree = BinaryTree()
     for i in sequence:
         tree.insert(i)
-
-    #print_binary_tree_structure(tree.get_root())
-    print_tree(tree.get_root())
-
-    #tree.in_order()
-    print()
-    #tree.inverse_in_order()
-    print("In order traversal: ")
-    tree.in_order()
-    print("\nOnly leaf nodes:")
-    tree.leaf_bst()
-    print("\nOnly non-leaf nodes:")
-    tree.non_leaf_bst()
-    print("\nTotal nodes:")
-    tree.total_nodes_bst(54)
-    print()
-    tree.depth_node_bst(-46)
-    tree.depth_subtree_bst(106)
+    return tree
 
 
-    # while True:
-    #     print("1. Pre-load a sequence of integers to build a BST\n"
-    #           "2. Manually enter integer values, one by one, to build a BST\n"
-    #           "3. Exit")
-    #     print()
-    #     user_choice = take_only_valid_input(4)
-    #     print()
-    #
-    #     if user_choice == 1:
-    #         print("1. Display the tree shape of current BST, and then show the pre-order, in-order,"
-    #               " post-order and inverse-in-order traversal sequences of the BST\n"
-    #               "2. Show all leaf nodes of the BST, and all non-leaf nodes (separately)\n"
-    #               "3. Show a sub-tree and count its nodes\n"
-    #               "4. Show the depth of a given node in the BST\n"
-    #               "5. Show the depth of a subtree of the BST\n"
-    #               "6. Insert a new integer key into the bST\n"
-    #               "7. Delete an integer key from the BST\n"
-    #               "8. Exit")
-    #         user_choice = take_only_valid_input(9)
-    #     elif user_choice == 2:
-    #         print("Enter value: ")
-    #     elif user_choice == 3:
-    #         print("Goodbye")
-    #         break
+def main():
+
+    while True:
+        print("1. Pre-load a sequence of integers to build a BST\n"
+              "2. Manually enter integer values, one by one, to build a BST\n"
+              "3. Exit")
+        print()
+        print("Enter choice: ")
+        user_choice = take_only_valid_input(0, 4)
+        print()
+
+        if user_choice == 1:
+            print("Enter size of tree:")
+            tree_size = take_only_valid_input(0, 101)
+            print("Generating randomised sequence of integers...")
+            sequence = generate_random_integer_set(tree_size)
+            print("Sequence:", sequence)
+            print()
+            tree = BinaryTree()
+            for i in sequence:
+                tree.insert(i)
+            level_2_menu(tree)
+
+        elif user_choice == 2:
+            print("Enter size of tree: ")
+            tree_size = take_only_valid_input(0, 30)
+            tree = manually_create_bst(tree_size)
+            level_2_menu(tree)
+
+        elif user_choice == 3:
+            print("Goodbye")
+            break
 
 
 main()
