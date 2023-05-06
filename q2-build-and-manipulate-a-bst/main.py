@@ -147,8 +147,11 @@ class BinaryTree:
     the subtree
     """
     def total_nodes_bst(self, n):
+        self.size = 0
         sub_root = self.total_nodes_bst_search_helper(n)
         self.total_nodes_bst_helper(sub_root)
+        print("\nNo. of nodes in sub-tree: ", self.size)
+        print_tree(sub_root)
 
     def total_nodes_bst_search_helper(self, n):
         current = self.root  # Start from the root
@@ -165,6 +168,7 @@ class BinaryTree:
     def total_nodes_bst_helper(self, root):
         if root is not None:
             print(root.element, end=" ")
+            self.size += 1
             self.total_nodes_bst_helper(root.left)
             self.total_nodes_bst_helper(root.right)
 
