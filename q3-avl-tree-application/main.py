@@ -24,6 +24,25 @@ class AVLTree:
     def is_leaf(self):
         return self.height == 0
 
+    def leaf_node_sorter(self, bool):
+        if self.node is None:
+            return []
+
+        nodes = []
+
+        l = self.node.left.leaf_node_sorter(bool)
+        for i in l:
+            nodes.append(i)
+
+        if self.is_leaf() is bool:
+            nodes.append(self.node.key)
+
+        l = self.node.right.leaf_node_sorter(bool)
+        for i in l:
+            nodes.append(i)
+
+        return nodes
+
     def insert(self, key):
         tree = self.node
 
@@ -156,20 +175,56 @@ class AVLTree:
         self.update_balances()
         return (abs(self.balance) < 2) and self.node.left.check_balanced() and self.node.right.check_balanced()
 
-    def inorder_traverse(self):
+    def in_order_traverse(self):
         if self.node is None:
             return []
 
         inlist = []
-        l = self.node.left.inorder_traverse()
+        l = self.node.left.in_order_traverse()
         for i in l:
             inlist.append(i)
 
         inlist.append(self.node.key)
 
-        l = self.node.right.inorder_traverse()
+        l = self.node.right.in_order_traverse()
         for i in l:
             inlist.append(i)
+
+        return inlist
+
+    """ Q3(b) A method to return the pre-order traversal sequence of the AVL tree """
+    def pre_order_traverse(self):
+        if self.node is None:
+            return []
+
+        inlist = []
+        inlist.append(self.node.key)
+
+        l = self.node.left.pre_order_traverse()
+        for i in l:
+            inlist.append(i)
+
+        l = self.node.right.pre_order_traverse()
+        for i in l:
+            inlist.append(i)
+
+        return inlist
+
+    """ Q3(b) A method to return the post-order traversal sequence of the AVL tree """
+    def post_order_traverse(self):
+        if self.node is None:
+            return []
+
+        inlist = []
+        l = self.node.left.post_order_traverse()
+        for i in l:
+            inlist.append(i)
+
+        l = self.node.right.post_order_traverse()
+        for i in l:
+            inlist.append(i)
+
+        inlist.append(self.node.key)
 
         return inlist
 
@@ -219,17 +274,19 @@ def level_2_menu(tree):
             print("\n")
         elif user_input == 2:  # Displays various traversal sequences
             print("Displaying Pre-Order traversal sequence:")
-            # display pre-order
+            print(tree.pre_order_traverse())
             print("\nDisplaying In-Order traversal sequence:")
-            print(tree.inorder_traverse())
+            print(tree.in_order_traverse())
             print("\nDisplaying Post-Order traversal sequence:")
-            # display post-order
+            print(tree.post_order_traverse())
             print("\n")
         elif user_input == 3:  # Displays leaf/non-leaf nodes
             print("Displaying all leaf nodes of the AVL tree:")
-            # display leaf nodes
+            #print(tree.print_leaf_nodes())
+            #print(tree.leaf_nodes())
+            print(tree.leaf_node_sorter(True))
             print("Displaying all non-leaf nodes of the AVL tree:")
-            # display non-leaf nodes
+            print(tree.leaf_node_sorter(False))
             print("\n")
         elif user_input == 4:  # Adds an integer to the AVL Tree
             print("Enter an integer to add it to the BST:")
@@ -258,7 +315,6 @@ def level_2_menu(tree):
 
 def main():
     sample_dataset = [58, 82, -55, 20, 35, 79, 23, 14, 0, -21, 103, 92, 44, 84, 50, 46, 47, 49, 45, 72, 89]
-    print(sample_dataset)
 
     while True:
         print("1. Pre-load a sequence of integers to build an AVL Tree\n"
