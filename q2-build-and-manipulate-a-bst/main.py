@@ -222,21 +222,20 @@ class BinaryTree:
                 return root.right
 
             # If node to delete has both left and right children...
-            temp_node = root
+            temp_node = root  # A temp node to store the node to delete
             temp_node_child = root.right  # A temp node to store the right child
             # Find the smallest element in delete node's subtree (i.e. go all the way down left branch)
             while temp_node_child.left:
-                temp_node = temp_node_child  # Store smallest node/element
-                temp_node_child = temp_node.left
+                temp_node = temp_node_child  # Delete node to delete, replace with child
+                temp_node_child = temp_node.left  # Store left child, repeat until final left child
 
+            # Update temp_node and delete temp_node_child node and element
             if temp_node is not root:
                 temp_node.left = temp_node_child.right
             else:
                 temp_node.right = temp_node_child.right
 
             root.element = temp_node_child.element
-            # Delete smallest node in right subtree
-            #root.right = self.delete_node_helper(root.right, root.element)
         return root
 
 
@@ -325,7 +324,7 @@ def take_only_valid_input(min_value, max_value):
         print()
 
 
-""" A function to display the level 2 menu of the console menu, allowing users to perform
+""" A function to display level 2 of the console menu, allowing users to perform
 several operations on the Binary Search Tree provided as a parameter
 """
 def level_2_menu(tree):
