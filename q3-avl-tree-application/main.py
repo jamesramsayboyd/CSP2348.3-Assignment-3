@@ -52,7 +52,6 @@ class AVLTree:
             self.node = new_node
             self.node.left = AVLTree()
             self.node.right = AVLTree()
-            print("Node", key, "inserted successfully")
 
         elif key < tree.element:
             self.node.left.insert(key)
@@ -153,7 +152,7 @@ class AVLTree:
 
     def logical_successor(self, node):
         '''
-        Find the smallese valued node in RIGHT child
+        Find the smallest valued node in RIGHT child
         '''
         node = node.right.node
         if node is not None:  # just a sanity check
@@ -239,54 +238,82 @@ class AVLTree:
             if self.node.left is not None:
                 self.node.left.display(level + 2, '<')
 
-    def delete(self, key):
-        root = self.node
-        self.delete_node(root, key)
+    def get_root(self):
+        return self.node
 
-    def delete_node(self, root, key):
-        # Begin with same BST node delete function from Q2:
+    def delete_node(self, key):
+        tree = self.node
 
-        if not root:
-            return root
+        if tree.element is None:
+            return
 
-        elif root.element < key:
-            root.left = self.delete_node(root.left, key)
+        elif key < tree.element:
+            self.delete_node(key)
 
-        elif root.element > key:
-            root.right = self.delete_node(root.right, key)
+        elif key > tree.element:
+            self.delete_node(key)
 
-        else:  # If node to delete is found...
-            if not root.right:  # If node to delete has no right child, new root is root.left
+        else:  # key is found
+            if not tree.right:
                 return root.left
-            if not root.left:  # If node to delete has no left child, new root is root.right
+            if not root.left:
                 return root.right
 
-            # If node to delete has both left and right children...
-            temp_node = root  # A temp node to store the node to delete
-            temp_node_child = root.right  # A temp node to store the right child
 
-            # Find the smallest element in delete node's subtree (i.e. go all the way down left branch)
-            while temp_node_child.left:
-                temp_node = temp_node_child  # Delete node to delete, replace with child
-                temp_node_child = temp_node.left  # Store left child, repeat until final left child
-
-            # Update temp_node and delete temp_node_child node and element
-            if temp_node is not root:
+            temp_node = self.logical_predecessor()
+            temp_node_child = temp_node.right
+            if temp_node is not tree:
                 temp_node.left = temp_node_child.right
             else:
                 temp_node.right = temp_node_child.right
 
-            root.element = temp_node_child.element
+            tree.element = temp_node_child.element
 
-        if root is None:
-            return root
+            self.rebalance()
+            return tree
 
-        # Now update heights and balance tree
-        #self.balance()
-        self.update_heights()
-        self.update_balances()
-
-        return root
+        # # Begin with same BST node delete function from Q2:
+        # if self.node is None:
+        #     return self.node
+        #
+        # if root.element < key:
+        #     root.left = self.delete_node(root.left, key)
+        #
+        # elif root.element > key:
+        #     root.right = self.delete_node(root.right, key)
+        #
+        # else:  # If node to delete is found...
+        #     if not root.right:  # If node to delete has no right child, new root is root.left
+        #         return root.left
+        #     if not root.left:  # If node to delete has no left child, new root is root.right
+        #         return root.right
+        #
+        #     # If node to delete has both left and right children...
+        #     temp_node = root  # A temp node to store the node to delete
+        #     temp_node_child = root.right  # A temp node to store the right child
+        #
+        #     # Find the smallest element in delete node's subtree (i.e. go all the way down left branch)
+        #     while temp_node_child.left:
+        #         temp_node = temp_node_child  # Delete node to delete, replace with child
+        #         temp_node_child = temp_node.left  # Store left child, repeat until final left child
+        #
+        #     # Update temp_node and delete temp_node_child node and element
+        #     if temp_node is not root:
+        #         temp_node.left = temp_node_child.right
+        #     else:
+        #         temp_node.right = temp_node_child.right
+        #
+        #     root.element = temp_node_child.element
+        #
+        # if root is None:
+        #     return root
+        #
+        # # Now update heights and balance tree
+        # #self.balance()
+        # self.update_heights()
+        # self.update_balances()
+        #
+        # return root
 
 
 """ Prompts the user to enter a valid input between minimum and maximum values
@@ -343,8 +370,8 @@ def level_2_menu(tree):
         elif user_input == 5:  # Deletes an integer from the BST
             print("Enter an integer to delete it from the BST:")
             delete_node = take_only_valid_input(-1000, 1000)
-            tree.delete(delete_node)
-            #tree.delete_node(tree.node, delete_node)
+            #tree.delete(delete_node)
+            tree.delete_node(delete_node)
             print("\n")
         else:  # Returns to level 1 menu
             print()
