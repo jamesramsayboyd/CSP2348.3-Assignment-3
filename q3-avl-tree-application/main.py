@@ -1,6 +1,6 @@
 class Node:
-    def __init__(self, key):
-        self.key = key
+    def __init__(self, e):
+        self.element = e
         self.left = None
         self.right = None
 
@@ -35,7 +35,7 @@ class AVLTree:
             nodes.append(i)
 
         if self.is_leaf() is bool:
-            nodes.append(self.node.key)
+            nodes.append(self.node.element)
 
         l = self.node.right.leaf_node_sorter(bool)
         for i in l:
@@ -52,16 +52,15 @@ class AVLTree:
             self.node = new_node
             self.node.left = AVLTree()
             self.node.right = AVLTree()
-            #debug("Inserted key [" + str(key) + "]")
+            print("Node", key, "inserted successfully")
 
-        elif key < tree.key:
+        elif key < tree.element:
             self.node.left.insert(key)
 
-        elif key > tree.key:
+        elif key > tree.element:
             self.node.right.insert(key)
 
         else:
-            #debug("Key [" + str(key) + "] already in tree.")
             print("ERROR: Node", key, "already exists in AVL Tree!")
 
         self.rebalance()
@@ -115,7 +114,7 @@ class AVLTree:
         a.right.node = t
 
     def update_heights(self, recurse=True):
-        if not self.node is None:
+        if self.node is not None:
             if recurse:
                 if self.node.left is not None:
                     self.node.left.update_heights()
@@ -185,7 +184,7 @@ class AVLTree:
         for i in l:
             inlist.append(i)
 
-        inlist.append(self.node.key)
+        inlist.append(self.node.element)
 
         l = self.node.right.in_order_traverse()
         for i in l:
@@ -199,7 +198,7 @@ class AVLTree:
             return []
 
         inlist = []
-        inlist.append(self.node.key)
+        inlist.append(self.node.element)
 
         l = self.node.left.pre_order_traverse()
         for i in l:
@@ -225,7 +224,7 @@ class AVLTree:
         for i in l:
             inlist.append(i)
 
-        inlist.append(self.node.key)
+        inlist.append(self.node.element)
 
         return inlist
 
@@ -235,10 +234,59 @@ class AVLTree:
         if self.node is not None:
             if self.node.left is not None:
                 self.node.right.display(level + 2, '>')
-            print(' ' * level * 2, pref, self.node.key, "[" + str(self.height) + ":" + str(self.balance) + "]",
+            print(' ' * level * 2, pref, self.node.element, "[" + str(self.height) + ":" + str(self.balance) + "]",
                   'L' if self.is_leaf() else ' ')
             if self.node.left is not None:
                 self.node.left.display(level + 2, '<')
+
+    def delete(self, key):
+        root = self.node
+        self.delete_node(root, key)
+
+    def delete_node(self, root, key):
+        # Begin with same BST node delete function from Q2:
+
+        if not root:
+            return root
+
+        elif root.element < key:
+            root.left = self.delete_node(root.left, key)
+
+        elif root.element > key:
+            root.right = self.delete_node(root.right, key)
+
+        else:  # If node to delete is found...
+            if not root.right:  # If node to delete has no right child, new root is root.left
+                return root.left
+            if not root.left:  # If node to delete has no left child, new root is root.right
+                return root.right
+
+            # If node to delete has both left and right children...
+            temp_node = root  # A temp node to store the node to delete
+            temp_node_child = root.right  # A temp node to store the right child
+
+            # Find the smallest element in delete node's subtree (i.e. go all the way down left branch)
+            while temp_node_child.left:
+                temp_node = temp_node_child  # Delete node to delete, replace with child
+                temp_node_child = temp_node.left  # Store left child, repeat until final left child
+
+            # Update temp_node and delete temp_node_child node and element
+            if temp_node is not root:
+                temp_node.left = temp_node_child.right
+            else:
+                temp_node.right = temp_node_child.right
+
+            root.element = temp_node_child.element
+
+        if root is None:
+            return root
+
+        # Now update heights and balance tree
+        #self.balance()
+        self.update_heights()
+        self.update_balances()
+
+        return root
 
 
 """ Prompts the user to enter a valid input between minimum and maximum values
@@ -295,12 +343,8 @@ def level_2_menu(tree):
         elif user_input == 5:  # Deletes an integer from the BST
             print("Enter an integer to delete it from the BST:")
             delete_node = take_only_valid_input(-1000, 1000)
-            if tree.search(delete_node):
-                tree.delete_node(delete_node)
-                print("Node deleted. Showing Inverse In-Order traversal:")
-                tree.inverse_in_order()
-            else:
-                print("ERROR: Node key", delete_node, "not found!")
+            tree.delete(delete_node)
+            #tree.delete_node(tree.node, delete_node)
             print("\n")
         else:  # Returns to level 1 menu
             print()
@@ -322,9 +366,7 @@ def main():
         if user_choice == 1:
             print("Using sample dataset", sample_dataset)
             print()
-            tree = AVLTree()
-            for i in sample_dataset:
-                tree.insert(i)
+            tree = AVLTree(sample_dataset)
             level_2_menu(tree)
 
         elif user_choice == 2:
