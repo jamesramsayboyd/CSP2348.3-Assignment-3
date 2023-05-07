@@ -60,8 +60,9 @@ class AVLTree:
         elif key > tree.key:
             self.node.right.insert(key)
 
-        #else:
+        else:
             #debug("Key [" + str(key) + "] already in tree.")
+            print("ERROR: Node", key, "already exists in AVL Tree!")
 
         self.rebalance()
 
@@ -282,8 +283,6 @@ def level_2_menu(tree):
             print("\n")
         elif user_input == 3:  # Displays leaf/non-leaf nodes
             print("Displaying all leaf nodes of the AVL tree:")
-            #print(tree.print_leaf_nodes())
-            #print(tree.leaf_nodes())
             print(tree.leaf_node_sorter(True))
             print("Displaying all non-leaf nodes of the AVL tree:")
             print(tree.leaf_node_sorter(False))
@@ -291,12 +290,7 @@ def level_2_menu(tree):
         elif user_input == 4:  # Adds an integer to the AVL Tree
             print("Enter an integer to add it to the BST:")
             add_node = take_only_valid_input(-1000, 1000)
-            if not tree.search(add_node):
-                tree.insert(add_node)
-                print("Node inserted. Showing Inverse In-Order traversal:")
-                tree.inverse_in_order()
-            else:
-                print("ERROR: Node key", add_node, "already exists in the BST!")
+            tree.insert(add_node)
             print("\n")
         elif user_input == 5:  # Deletes an integer from the BST
             print("Enter an integer to delete it from the BST:")
