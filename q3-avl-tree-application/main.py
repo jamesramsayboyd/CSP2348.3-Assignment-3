@@ -241,26 +241,29 @@ class AVLTree:
     def get_root(self):
         return self.node
 
-    def delete_node(self, key):
-        tree = self.node
+    def delete_node(self, tree, key):
+        root = tree.node
 
-        if tree.element is None:
+        if root is None:
             return
 
-        elif key < tree.element:
-            self.delete_node(key)
+        elif key < root.element:
+            self.delete_node(root.left, key)
 
-        elif key > tree.element:
-            self.delete_node(key)
+        elif key > root.element:
+            self.delete_node(root.right, key)
 
         else:  # key is found
-            if not tree.right:
-                return root.left
-            if not root.left:
-                return root.right
+            if root.right.node is None:  # Node has left child but no right child
+                temp_node = root.left.node
+                root.node = None
+                return temp_node
+            elif root.left.node is None:  # Node has right child but no left child
+                temp_node = root.right.node
+                root.node = None
+                return temp_node
 
-
-            temp_node = self.logical_predecessor()
+            temp_node = self.logical_predecessor(root.right.node)
             temp_node_child = temp_node.right
             if temp_node is not tree:
                 temp_node.left = temp_node_child.right
@@ -271,49 +274,6 @@ class AVLTree:
 
             self.rebalance()
             return tree
-
-        # # Begin with same BST node delete function from Q2:
-        # if self.node is None:
-        #     return self.node
-        #
-        # if root.element < key:
-        #     root.left = self.delete_node(root.left, key)
-        #
-        # elif root.element > key:
-        #     root.right = self.delete_node(root.right, key)
-        #
-        # else:  # If node to delete is found...
-        #     if not root.right:  # If node to delete has no right child, new root is root.left
-        #         return root.left
-        #     if not root.left:  # If node to delete has no left child, new root is root.right
-        #         return root.right
-        #
-        #     # If node to delete has both left and right children...
-        #     temp_node = root  # A temp node to store the node to delete
-        #     temp_node_child = root.right  # A temp node to store the right child
-        #
-        #     # Find the smallest element in delete node's subtree (i.e. go all the way down left branch)
-        #     while temp_node_child.left:
-        #         temp_node = temp_node_child  # Delete node to delete, replace with child
-        #         temp_node_child = temp_node.left  # Store left child, repeat until final left child
-        #
-        #     # Update temp_node and delete temp_node_child node and element
-        #     if temp_node is not root:
-        #         temp_node.left = temp_node_child.right
-        #     else:
-        #         temp_node.right = temp_node_child.right
-        #
-        #     root.element = temp_node_child.element
-        #
-        # if root is None:
-        #     return root
-        #
-        # # Now update heights and balance tree
-        # #self.balance()
-        # self.update_heights()
-        # self.update_balances()
-        #
-        # return root
 
 
 """ Prompts the user to enter a valid input between minimum and maximum values
@@ -371,7 +331,7 @@ def level_2_menu(tree):
             print("Enter an integer to delete it from the BST:")
             delete_node = take_only_valid_input(-1000, 1000)
             #tree.delete(delete_node)
-            tree.delete_node(delete_node)
+            tree.delete_node(tree, delete_node)
             print("\n")
         else:  # Returns to level 1 menu
             print()
