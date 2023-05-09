@@ -244,14 +244,14 @@ class AVLTree:
     def delete_node(self, tree, key):
         root = tree.node
 
-        if root is None:
-            return
+        if not root:
+            return root
 
         elif key < root.element:
-            self.delete_node(root.left, key)
+            root.left = self.delete_node(root.left, key)
 
         elif key > root.element:
-            self.delete_node(root.right, key)
+            root.right = self.delete_node(root.right, key)
 
         else:  # key is found
             if root.right.node is None:  # Node has left child but no right child
@@ -263,17 +263,16 @@ class AVLTree:
                 root.node = None
                 return temp_node
 
-            temp_node = self.logical_predecessor(root.right.node)
-            temp_node_child = temp_node.right
-            if temp_node is not tree:
-                temp_node.left = temp_node_child.right
-            else:
-                temp_node.right = temp_node_child.right
+            temp_node = self.logical_successor(root.right.node)
+            root.node.element = temp_node.element
+            root.right.node = self.delete_node(root.right.node, temp_node.element)
 
-            tree.element = temp_node_child.element
+            if root.node is None:
+                return root
 
+            self.update_heights()
             self.rebalance()
-            return tree
+            return root
 
 
 """ Prompts the user to enter a valid input between minimum and maximum values
@@ -319,7 +318,7 @@ def level_2_menu(tree):
         elif user_input == 3:  # Displays leaf/non-leaf nodes
             print("Displaying all leaf nodes of the AVL tree:")
             print(tree.leaf_node_sorter(True))
-            print("Displaying all non-leaf nodes of the AVL tree:")
+            print("\nDisplaying all non-leaf nodes of the AVL tree:")
             print(tree.leaf_node_sorter(False))
             print("\n")
         elif user_input == 4:  # Adds an integer to the AVL Tree
@@ -330,7 +329,6 @@ def level_2_menu(tree):
         elif user_input == 5:  # Deletes an integer from the BST
             print("Enter an integer to delete it from the BST:")
             delete_node = take_only_valid_input(-1000, 1000)
-            #tree.delete(delete_node)
             tree.delete_node(tree, delete_node)
             print("\n")
         else:  # Returns to level 1 menu
