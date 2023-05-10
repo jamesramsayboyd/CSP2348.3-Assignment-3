@@ -193,7 +193,8 @@ class AVLTree:
 
     """ Q3(b) A method to return the pre-order traversal sequence of the AVL tree """
     def pre_order_traverse(self):
-        if self.node is None:
+        #if self.node is None:
+        if not self.node:
             return []
 
         inlist = []
@@ -201,10 +202,12 @@ class AVLTree:
 
         l = self.node.left.pre_order_traverse()
         for i in l:
+            print("Pre-order function: left i =", i)
             inlist.append(i)
 
         l = self.node.right.pre_order_traverse()
         for i in l:
+            print("Pre-order function: right i =", i)
             inlist.append(i)
 
         return inlist
@@ -241,26 +244,34 @@ class AVLTree:
     def get_root(self):
         return self.node
 
-    def delete_node(self, tree, key):
-        root = tree.node
+    def delete_node(self, root, key):
+        #root = tree.node
 
-        if not root:
+        if root is None:
             return root
 
         elif key < root.element:
-            root.left = self.delete_node(root.left, key)
+            root.left = self.delete_node(root.left.node, key)
 
         elif key > root.element:
-            root.right = self.delete_node(root.right, key)
+            root.right = self.delete_node(root.right.node, key)
 
         else:  # key is found
             if root.right.node is None:  # Node has left child but no right child
+                print("right node:", root.right.node)
+                print("left node:", root.left.node)
                 temp_node = root.left.node
+                print("temp_node:", temp_node)
                 root.node = None
+                print("root.node:", root.node)
                 return temp_node
             elif root.left.node is None:  # Node has right child but no left child
+                print("left node:", root.left.node)
+                print("right node:", root.right.node)
                 temp_node = root.right.node
+                print("temp_node:", temp_node)
                 root.node = None
+                print("root.node:", root.node)
                 return temp_node
 
             temp_node = self.logical_successor(root.right.node)
@@ -270,9 +281,24 @@ class AVLTree:
             if root.node is None:
                 return root
 
-            self.update_heights()
             self.rebalance()
+            #self.check_balanced()
+            print("end of function root:", root)
             return root
+
+    def test_working(self):
+        print("self.node:", self.node)
+        print("self.node.element:", self.node.element)
+        if self.node.left:
+            print("self.node.left.node:", self.node.left.node)
+            print("self.node.left.node.element", self.node.left.node.element)
+        else:
+            print("self.node.left is None")
+        if self.node.right:
+            print("self.node.right.node:", self.node.right.node)
+            print("self.node.right.node.element:", self.node.right.node.element)
+        else:
+            print("self.node.right is None")
 
 
 """ Prompts the user to enter a valid input between minimum and maximum values
@@ -329,7 +355,8 @@ def level_2_menu(tree):
         elif user_input == 5:  # Deletes an integer from the BST
             print("Enter an integer to delete it from the BST:")
             delete_node = take_only_valid_input(-1000, 1000)
-            tree.delete_node(tree, delete_node)
+            tree.delete_node(tree.node, delete_node)
+            tree.test_working()
             print("\n")
         else:  # Returns to level 1 menu
             print()
