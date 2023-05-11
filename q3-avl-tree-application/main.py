@@ -246,6 +246,8 @@ class AVLTree:
 
     def delete_node(self, root, key):
         #root = tree.node
+        self.update_heights()
+        self.update_balances()
 
         if root is None:
             return root
@@ -258,20 +260,20 @@ class AVLTree:
 
         else:  # key is found
             if root.right.node is None:  # Node has left child but no right child
-                print("right node:", root.right.node)
-                print("left node:", root.left.node)
+                #print("right node:", root.right.node)
+                #print("left node:", root.left.node)
                 temp_node = root.left.node
-                print("temp_node:", temp_node)
+                #print("temp_node:", temp_node)
                 root.node = None
-                print("root.node:", root.node)
+                #print("root.node:", root.node)
                 return temp_node
             elif root.left.node is None:  # Node has right child but no left child
-                print("left node:", root.left.node)
-                print("right node:", root.right.node)
+                #print("left node:", root.left.node)
+                #print("right node:", root.right.node)
                 temp_node = root.right.node
-                print("temp_node:", temp_node)
+                #print("temp_node:", temp_node)
                 root.node = None
-                print("root.node:", root.node)
+                #print("root.node:", root.node)
                 return temp_node
 
             temp_node = self.logical_successor(root.right.node)
@@ -283,7 +285,7 @@ class AVLTree:
 
             self.rebalance()
             #self.check_balanced()
-            print("end of function root:", root)
+            #print("end of function root:", root)
             return root
 
     def test_working(self):
@@ -332,6 +334,7 @@ def level_2_menu(tree):
         if user_input == 1:  # Displays tree shape
             print("Displaying AVL Tree rotated 90 degrees anti-clockwise (root node is at far left)")
             tree.display()
+            #tree.test_working()
             print("\n")
         elif user_input == 2:  # Displays various traversal sequences
             print("Displaying Pre-Order traversal sequence:")
@@ -364,6 +367,7 @@ def level_2_menu(tree):
 
 
 def main():
+    test_dataset = [46]
     sample_dataset = [58, 82, -55, 20, 35, 79, 23, 14, 0, -21, 103, 92, 44, 84, 50, 46, 47, 49, 45, 72, 89]
 
     while True:
@@ -378,6 +382,7 @@ def main():
         if user_choice == 1:
             print("Using sample dataset", sample_dataset)
             print()
+            #tree = AVLTree(test_dataset)
             tree = AVLTree(sample_dataset)
             level_2_menu(tree)
 
