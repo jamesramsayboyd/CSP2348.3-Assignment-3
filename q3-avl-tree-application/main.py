@@ -202,12 +202,10 @@ class AVLTree:
 
         l = self.node.left.pre_order_traverse()
         for i in l:
-            print("Pre-order function: left i =", i)
             inlist.append(i)
 
         l = self.node.right.pre_order_traverse()
         for i in l:
-            print("Pre-order function: right i =", i)
             inlist.append(i)
 
         return inlist
@@ -246,37 +244,30 @@ class AVLTree:
 
     def delete_node(self, root, key):
         #root = tree.node
-        self.update_heights()
-        self.update_balances()
+        #self.update_heights()
+        #self.update_balances()
 
         if root is None:
             return root
 
         elif key < root.element:
-            root.left = self.delete_node(root.left.node, key)
+            root.left.node = self.delete_node(root.left.node, key)
 
         elif key > root.element:
-            root.right = self.delete_node(root.right.node, key)
+            root.right.node = self.delete_node(root.right.node, key)
 
         else:  # key is found
-            if root.right.node is None:  # Node has left child but no right child
-                #print("right node:", root.right.node)
-                #print("left node:", root.left.node)
-                temp_node = root.left.node
-                #print("temp_node:", temp_node)
-                root.node = None
-                #print("root.node:", root.node)
-                return temp_node
-            elif root.left.node is None:  # Node has right child but no left child
-                #print("left node:", root.left.node)
-                #print("right node:", root.right.node)
+            if root.left.node is None:  # Node has right child but no left child
                 temp_node = root.right.node
-                #print("temp_node:", temp_node)
                 root.node = None
-                #print("root.node:", root.node)
+                return temp_node
+            elif root.right.node is None:  # Node has left child but no right child
+                temp_node = root.left.node
+                root.node = None
                 return temp_node
 
-            temp_node = self.logical_successor(root.right.node)
+            #temp_node = self.logical_successor(root.right.node)
+            temp_node = self.logical_predecessor(root.right.node)
             root.node.element = temp_node.element
             root.right.node = self.delete_node(root.right.node, temp_node.element)
 
@@ -284,8 +275,7 @@ class AVLTree:
                 return root
 
             self.rebalance()
-            #self.check_balanced()
-            #print("end of function root:", root)
+            self.check_balanced()
             return root
 
     def test_working(self):
@@ -359,7 +349,7 @@ def level_2_menu(tree):
             print("Enter an integer to delete it from the BST:")
             delete_node = take_only_valid_input(-1000, 1000)
             tree.delete_node(tree.node, delete_node)
-            tree.test_working()
+            #tree.test_working()
             print("\n")
         else:  # Returns to level 1 menu
             print()
