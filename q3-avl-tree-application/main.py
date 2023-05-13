@@ -303,6 +303,18 @@ def take_only_valid_input(min_value, max_value):
         print()
 
 
+""" Prompts the user to enter integers one-by-one to manually create a Binary Search Tree """
+def manually_create_avl_tree(size):
+    sequence = []
+    for i in range(size):
+        print("Enter element no.", i + 1)
+        element = take_only_valid_input(-999, 999)
+        sequence.append(element)
+
+    print("Sequence:", sequence, "\n")
+    return AVLTree(sequence)
+
+
 """ A function to display level 2 of the console menu, allowing users to perform
 several operations on the Binary Search Tree provided as a parameter
 """
@@ -319,7 +331,6 @@ def level_2_menu(tree):
         if user_input == 1:  # Displays tree shape
             print("Displaying AVL Tree rotated 90 degrees anti-clockwise (root node is at far left)")
             tree.display()
-            #tree.test_working()
             print("\n")
         elif user_input == 2:  # Displays various traversal sequences
             print("Displaying Pre-Order traversal sequence:")
@@ -355,7 +366,6 @@ def level_2_menu(tree):
 
 
 def main():
-    test_dataset = [46]
     sample_dataset = [58, 82, -55, 20, 35, 79, 23, 14, 0, -21, 103, 92, 44, 84, 50, 46, 47, 49, 45, 72, 89]
 
     while True:
@@ -370,14 +380,13 @@ def main():
         if user_choice == 1:
             print("Using sample dataset", sample_dataset)
             print()
-            #tree = AVLTree(test_dataset)
             tree = AVLTree(sample_dataset)
             level_2_menu(tree)
 
         elif user_choice == 2:
             print("Enter size of tree: ")
             tree_size = take_only_valid_input(0, 30)
-            tree = manually_create_bst(tree_size)
+            tree = manually_create_avl_tree(tree_size)
             level_2_menu(tree)
 
         elif user_choice == 3:
