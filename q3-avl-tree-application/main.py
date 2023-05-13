@@ -158,7 +158,7 @@ class AVLTree:
         if node is not None:  # just a sanity check
 
             while node.left is not None:
-                #debug("LS: traversing: " + str(node.key))
+                debug("LS: traversing: " + str(node.key))
                 if node.left.node is None:
                     return node
                 else:
@@ -243,56 +243,49 @@ class AVLTree:
         return self.node
 
     def delete_node(self, root, key):
-        #root = tree.node
-        #self.update_heights()
-        #self.update_balances()
-
-        if root is None:
+        if not root:
             return root
 
+        # Searching down tree branches for Node to delete...
         elif key < root.element:
             root.left.node = self.delete_node(root.left.node, key)
-
         elif key > root.element:
             root.right.node = self.delete_node(root.right.node, key)
 
-        else:  # key is found
-            if root.left.node is None:  # Node has right child but no left child
+        elif key == root.element:  # key is found, four possible cases as follows
+            # Node is a leaf node, can be simply deleted
+            if root.left.node is None and root.right.node is None:
+                root.node = None
+                return None
+            # Node has right child but no left child
+            elif root.left.node is None:
                 temp_node = root.right.node
-                #temp_node = root.right
                 root.node = None
                 return temp_node
-            elif root.right.node is None:  # Node has left child but no right child
+            # Node has left child but no right child
+            elif root.right.node is None:
                 temp_node = root.left.node
-                #temp_node = root.left
                 root.node = None
                 return temp_node
+            # Node has both left and right children, some work has to be done
+            # Finding logical successor. This is implemented as a function of the AVLTree class, but
+            # I was just having too much trouble getting it to work as I'd already written most of this
+            # function to treat root as a Node object. This isn't especially elegant but it works
+            else:
+                current = root.right.node
+                while current.left.node:
+                    current = current.left.node
+                logical_successor = current
 
-            temp_node = self.logical_successor(root.right.node)
-            #temp_node = self.logical_predecessor(root.right.node)
-            root.node.element = temp_node.element
-            root.right.node = self.delete_node(root.right.node, temp_node.element)
+                root.element = logical_successor.element
+                root.right.node = self.delete_node(root.right.node, logical_successor.element)
 
-        if root is None:
+        if not root.element:
             return root
 
-        self.rebalance()
         self.check_balanced()
+        self.rebalance()
         return root
-
-    def test_working(self):
-        print("self.node:", self.node)
-        print("self.node.element:", self.node.element)
-        if self.node.left:
-            print("self.node.left.node:", self.node.left.node)
-            print("self.node.left.node.element", self.node.left.node.element)
-        else:
-            print("self.node.left is None")
-        if self.node.right:
-            print("self.node.right.node:", self.node.right.node)
-            print("self.node.right.node.element:", self.node.right.node.element)
-        else:
-            print("self.node.right is None")
 
 
 """ Prompts the user to enter a valid input between minimum and maximum values
@@ -350,8 +343,11 @@ def level_2_menu(tree):
         elif user_input == 5:  # Deletes an integer from the BST
             print("Enter an integer to delete it from the BST:")
             delete_node = take_only_valid_input(-1000, 1000)
-            tree.delete_node(tree.node, delete_node)
-            #tree.test_working()
+            nodes = tree.pre_order_traverse()
+            if delete_node in nodes:
+                tree.delete_node(tree.node, delete_node)
+            else:
+                print("ERROR: Node", delete_node, "not found!")
             print("\n")
         else:  # Returns to level 1 menu
             print()
