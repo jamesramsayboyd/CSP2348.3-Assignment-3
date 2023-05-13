@@ -259,24 +259,26 @@ class AVLTree:
         else:  # key is found
             if root.left.node is None:  # Node has right child but no left child
                 temp_node = root.right.node
+                #temp_node = root.right
                 root.node = None
                 return temp_node
             elif root.right.node is None:  # Node has left child but no right child
                 temp_node = root.left.node
+                #temp_node = root.left
                 root.node = None
                 return temp_node
 
-            #temp_node = self.logical_successor(root.right.node)
-            temp_node = self.logical_predecessor(root.right.node)
+            temp_node = self.logical_successor(root.right.node)
+            #temp_node = self.logical_predecessor(root.right.node)
             root.node.element = temp_node.element
             root.right.node = self.delete_node(root.right.node, temp_node.element)
 
-            if root.node is None:
-                return root
-
-            self.rebalance()
-            self.check_balanced()
+        if root is None:
             return root
+
+        self.rebalance()
+        self.check_balanced()
+        return root
 
     def test_working(self):
         print("self.node:", self.node)
